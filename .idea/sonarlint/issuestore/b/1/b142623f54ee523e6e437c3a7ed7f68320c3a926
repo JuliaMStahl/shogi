@@ -4,93 +4,107 @@ java:S6539"ŸSplit this â€œMonster Classâ€ into smaller and more specialized 
 o
 java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").( Şû 
 t
-java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ğ´ø¢ÿÿÿÿÿ
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ğ´ø¢ÿÿÿÿÿ
 n
-java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(€„Ï.
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(€„Ï.
 t
-java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(—†µÓúÿÿÿÿ
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(—†µÓúÿÿÿÿ
 t
-java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(™Ì…Óıÿÿÿÿ
-u
-java:S2293ú"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ó¤úáûÿÿÿÿ
-p
-java:S2293û"YReplace the type specification in this constructor call with the diamond operator ("<>").(ËÏÌ§
-u
-java:S2293È"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ó¤úáûÿÿÿÿ
-p
-java:S2293É"YReplace the type specification in this constructor call with the diamond operator ("<>").(ËÏÌ§
-u
-java:S2293Ò"YReplace the type specification in this constructor call with the diamond operator ("<>").(ğæ¨¸ùÿÿÿÿ
-u
-java:S2293Ê"YReplace the type specification in this constructor call with the diamond operator ("<>").(Öã½«ûÿÿÿÿ
-a
-java:S1192"JDefine a constant instead of duplicating this literal "Game Over" 4 times.(£Àô³
-F
-java:S1066İ"/Merge this if statement with the enclosing one.(¶€‰
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(™Ì…Óıÿÿÿÿ
+|
+java:S2293ü"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ó¤úáûÿÿÿÿ8‡àÖ¼ñ1
+w
+java:S2293ı"YReplace the type specification in this constructor call with the diamond operator ("<>").(ËÏÌ§8‰àÖ¼ñ1
+|
+java:S2293Ê"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ó¤úáûÿÿÿÿ8‹àÖ¼ñ1
+w
+java:S2293Ë"YReplace the type specification in this constructor call with the diamond operator ("<>").(ËÏÌ§8ŒàÖ¼ñ1
+|
+java:S2293Ô"YReplace the type specification in this constructor call with the diamond operator ("<>").(ğæ¨¸ùÿÿÿÿ8àÖ¼ñ1
+|
+java:S2293Ì"YReplace the type specification in this constructor call with the diamond operator ("<>").(Öã½«ûÿÿÿÿ8àÖ¼ñ1
+h
+java:S1192Ÿ"JDefine a constant instead of duplicating this literal "Game Over" 4 times.(£Àô³8“àÖ¼ñ1
+M
+java:S1066ß"/Merge this if statement with the enclosing one.(Ñ¼›Ÿ8¦àÖ¼ñ1
 
 java:S1319"kThe type of "chessPieces" should be an interface such as "List" rather than the implementation "ArrayList".( Şû 
 
-java:S1319"rThe type of "readyToMoveSquares" should be an interface such as "List" rather than the implementation "ArrayList".(Ğ´ø¢ÿÿÿÿÿ
+java:S1319"rThe type of "readyToMoveSquares" should be an interface such as "List" rather than the implementation "ArrayList".(Ğ´ø¢ÿÿÿÿÿ
 Š
-java:S1319"uThe type of "readyToCaptureSquares" should be an interface such as "List" rather than the implementation "ArrayList".(€„Ï.
+java:S1319"uThe type of "readyToCaptureSquares" should be an interface such as "List" rather than the implementation "ArrayList".(€„Ï.
 ‹
-java:S1319"pThe type of "p1CapturedPieces" should be an interface such as "List" rather than the implementation "ArrayList".(—†µÓúÿÿÿÿ
+java:S1319"pThe type of "p1CapturedPieces" should be an interface such as "List" rather than the implementation "ArrayList".(—†µÓúÿÿÿÿ
 ‹
-java:S1319"pThe type of "p2CapturedPieces" should be an interface such as "List" rather than the implementation "ArrayList".(™Ì…Óıÿÿÿÿ
-‡
-java:S1319Ñ"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(„¸ç®
+java:S1319"pThe type of "p2CapturedPieces" should be an interface such as "List" rather than the implementation "ArrayList".(™Ì…Óıÿÿÿÿ
+
+java:S1319Ó"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(„¸ç®8¸àÖ¼ñ1
 D
-java:S1604å"(Make this anonymous inner class a lambda(Í‚ÅÌûÿÿÿÿ
+java:S1604ç"(Make this anonymous inner class a lambda(Í‚ÅÌûÿÿÿÿ
 m
 java:S1104"WMake chessPieces a static final constant or non-public and provide accessors if needed.( Şû 
 t
 java:S1104"YMake selectedPiece a static final constant or non-public and provide accessors if needed.(©ù…›üÿÿÿÿ
+‚
+java:S1104"`Make selectedPieceActions a static final constant or non-public and provide accessors if needed.(ˆğ²©üÿÿÿÿ8¥ã¼ñ1
 y
-java:S1104"^Make readyToMoveSquares a static final constant or non-public and provide accessors if needed.(Ğ´ø¢ÿÿÿÿÿ
+java:S1104"^Make readyToMoveSquares a static final constant or non-public and provide accessors if needed.(Ğ´ø¢ÿÿÿÿÿ
 v
-java:S1104"aMake readyToCaptureSquares a static final constant or non-public and provide accessors if needed.(€„Ï.
+java:S1104"aMake readyToCaptureSquares a static final constant or non-public and provide accessors if needed.(€„Ï.
 w
-java:S1104"\Make p1CapturedPieces a static final constant or non-public and provide accessors if needed.(—†µÓúÿÿÿÿ
+java:S1104"\Make p1CapturedPieces a static final constant or non-public and provide accessors if needed.(—†µÓúÿÿÿÿ
 w
-java:S1104"\Make p2CapturedPieces a static final constant or non-public and provide accessors if needed.(™Ì…Óıÿÿÿÿ
+java:S1104"\Make p2CapturedPieces a static final constant or non-public and provide accessors if needed.(™Ì…Óıÿÿÿÿ
 f
-java:S1104"QMake cpuAI a static final constant or non-public and provide accessors if needed.(÷¡Ÿ'
-0
-java:S1220""Move this file to a named package.
+java:S1104"QMake cpuAI a static final constant or non-public and provide accessors if needed.(÷¡Ÿ'
 Y
-java:S2184õ"BCast one of the operands of this division operation to a "double".(šÂåÜ
+java:S2184÷"BCast one of the operands of this division operation to a "double".(šÂåÜ
 Y
-java:S2184õ"BCast one of the operands of this division operation to a "double".(šÂåÜ
+java:S2184÷"BCast one of the operands of this division operation to a "double".(šÂåÜ
 t
-java:S1450<"YRemove the "chessBoard" field and declare it as a local variable in the relevant methods.(‚ùÕøÿÿÿÿ
+java:S1450>"YRemove the "chessBoard" field and declare it as a local variable in the relevant methods.(‚ùÕøÿÿÿÿ
+z	java:S131`"YComplete cases by adding the missing enum constants or add a default case to this switch.(½ö‡öÿÿÿÿÿ8ÂÁ’˜ğ1
 i
-java:S3776v"SRefactor this method to reduce its Cognitive Complexity from 116 to the 15 allowed.(üŒÙ³
-W	java:S125Š"<This block of commented-out lines of code should be removed.(«Ôõûüÿÿÿÿ
-Q	java:S125›"<This block of commented-out lines of code should be removed.(ĞÉ
-W	java:S125¨"<This block of commented-out lines of code should be removed.(¥Í“›øÿÿÿÿ
-W	java:S125¶"<This block of commented-out lines of code should be removed.(«Ôõûüÿÿÿÿ
-W	java:S125Â"<This block of commented-out lines of code should be removed.(ã€£şÿÿÿÿ
-F	java:S106Ì"+Replace this use of System.out by a logger.(«Ú¬øÿÿÿÿ
-R	java:S125Ò"<This block of commented-out lines of code should be removed.(­ã™’
-N
-java:S1135Ñ"2Complete the task associated to this TODO comment.(÷Èºäûÿÿÿÿ
-R	java:S125ª"<This block of commented-out lines of code should be removed.(Áè®
-n
-java:S3776º"RRefactor this method to reduce its Cognitive Complexity from 75 to the 15 allowed.(¼ Òşüÿÿÿÿ
-i
-java:S3776Ñ"RRefactor this method to reduce its Cognitive Complexity from 87 to the 15 allowed.(„¸ç®
-N
-java:S1135Ï"2Complete the task associated to this TODO comment.(ê¼ó¶şÿÿÿÿ
-W	java:S125›"<This block of commented-out lines of code should be removed.(İÙÇŠıÿÿÿÿ
-R	java:S125í"<This block of commented-out lines of code should be removed.(´Ã¢Ú
-W	java:S125ñ"<This block of commented-out lines of code should be removed.(ªúšãùÿÿÿÿ
-R	java:S125Š"<This block of commented-out lines of code should be removed.(²“Ûñ
-W	java:S125€"<This block of commented-out lines of code should be removed.(æòî­üÿÿÿÿ
+java:S3776x"SRefactor this method to reduce its Cognitive Complexity from 116 to the 15 allowed.(üŒÙ³
+X
+java:S2209ƒ"5Change this instance-reference to a static reference.(È¼›™ıÿÿÿÿ8İ´ÿ¼ñ1
+Y
+java:S2696Š"6Make the enclosing method "static" or remove this set.(´²·ıÿÿÿÿ8ß´ÿ¼ñ1
+X
+java:S2209Š"5Change this instance-reference to a static reference.(´²·ıÿÿÿÿ8à´ÿ¼ñ1
+W	java:S125Œ"<This block of commented-out lines of code should be removed.(«Ôõûüÿÿÿÿ
+Q	java:S125"<This block of commented-out lines of code should be removed.(ĞÉ
+^	java:S125ª"<This block of commented-out lines of code should be removed.(¥Í“›øÿÿÿÿ8ˆïÖ¼ñ1
+^	java:S125¸"<This block of commented-out lines of code should be removed.(«Ôõûüÿÿÿÿ8ŠïÖ¼ñ1
+^	java:S125Ä"<This block of commented-out lines of code should be removed.(ã€£şÿÿÿÿ8‹ïÖ¼ñ1
+M	java:S106Î"+Replace this use of System.out by a logger.(«Ú¬øÿÿÿÿ8ïÖ¼ñ1
+Y	java:S125Ô"<This block of commented-out lines of code should be removed.(­ã™’8ïÖ¼ñ1
+U
+java:S1135Ó"2Complete the task associated to this TODO comment.(÷Èºäûÿÿÿÿ8‘ïÖ¼ñ1
+Y	java:S125¬"<This block of commented-out lines of code should be removed.(Áè®8œïÖ¼ñ1
+u
+java:S3776¼"RRefactor this method to reduce its Cognitive Complexity from 75 to the 15 allowed.(¼ Òşüÿÿÿÿ8ŸïÖ¼ñ1
+Y
+java:S2696Æ"6Make the enclosing method "static" or remove this set.(Ê—•ûÿÿÿÿ8ò´ÿ¼ñ1
+X
+java:S2209Æ"5Change this instance-reference to a static reference.(Ê—•ûÿÿÿÿ8ò´ÿ¼ñ1
+{	java:S131÷"YComplete cases by adding the missing enum constants or add a default case to this switch.(½ö‡öÿÿÿÿÿ8³ïÖ¼ñ1
+{	java:S131”"YComplete cases by adding the missing enum constants or add a default case to this switch.(½ö‡öÿÿÿÿÿ8¶ïÖ¼ñ1
+{	java:S131¶"YComplete cases by adding the missing enum constants or add a default case to this switch.(½ö‡öÿÿÿÿÿ8ºïÖ¼ñ1
+p
+java:S3776Ó"RRefactor this method to reduce its Cognitive Complexity from 87 to the 15 allowed.(„¸ç®8¿ïÖ¼ñ1
+U
+java:S1135Ñ"2Complete the task associated to this TODO comment.(ê¼ó¶şÿÿÿÿ8ÂïÖ¼ñ1
+^	java:S125"<This block of commented-out lines of code should be removed.(İÙÇŠıÿÿÿÿ8ØñÖ¼ñ1
+Y	java:S125ï"<This block of commented-out lines of code should be removed.(´Ã¢Ú8çñÖ¼ñ1
+^	java:S125ó"<This block of commented-out lines of code should be removed.(ªúšãùÿÿÿÿ8çñÖ¼ñ1
+Y	java:S125Œ"<This block of commented-out lines of code should be removed.(²“Ûñ8êñÖ¼ñ1
+W	java:S125‚"<This block of commented-out lines of code should be removed.(æòî­üÿÿÿÿ
 c
-java:S3252ï"LUse static access with "javax.swing.WindowConstants" for "DISPOSE_ON_CLOSE".(§ıÏÁ
+java:S3252ñ"LUse static access with "javax.swing.WindowConstants" for "DISPOSE_ON_CLOSE".(§ıÏÁ
 @
-java:S1068@"+Remove this unused "message" private field.(¶Àş
+java:S1068B"+Remove this unused "message" private field.(¶Àş
 İ
-java:S6541v"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 135 to 64, Complexity from 44 to 14, Nesting Level from 6 to 2, Number of Variables from 16 to 6.(üŒÙ³
-Ş
-java:S6541Ñ"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 129 to 64, Complexity from 50 to 14, Nesting Level from 3 to 2, Number of Variables from 20 to 6.(„¸ç®
+java:S6541x"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 135 to 64, Complexity from 44 to 14, Nesting Level from 6 to 2, Number of Variables from 16 to 6.(üŒÙ³
+å
+java:S6541Ó"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 129 to 64, Complexity from 50 to 14, Nesting Level from 3 to 2, Number of Variables from 20 to 6.(„¸ç®8£òÖ¼ñ1

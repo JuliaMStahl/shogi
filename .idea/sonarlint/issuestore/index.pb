@@ -5,3 +5,17 @@
 src/ChessAI.java,b/9/b9a197cafd8d825b5aba4d105fed6ed3f0298045
 A
 src/ChessGUI.java,b/1/b142623f54ee523e6e437c3a7ed7f68320c3a926
+C
+src/ChessPiece.java,5/2/52ce761204dba84f2d42486f10bbd3f7e4dfdb39
+B
+src/PieceMove.java,f/b/fb43d168f51dd5bba7890ea4f9eb2977950208a6
+B
+src/pieceType.java,7/9/79fe011de805db721e087273979815a3a4dc050a
+B
+src/PieceType.java,8/e/8e4d527bfb17719adab49c445995f2dce9692497
+I
+src/PromotionActions.java,3/3/332ade1e4418def1a1687816c074a40939f3b5ff
+]
+-.idea/sonarlint/securityhotspotstore/index.pb,8/8/88a9255124c95bdc913197c120a8d560edc59c8e
+S
+#.idea/sonarlint/issuestore/index.pb,9/f/9fe84ebb15faf917b7def6236dba604453cc61e0

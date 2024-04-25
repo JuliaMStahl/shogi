@@ -15,6 +15,8 @@ public class ChessGUI{
 
     public ArrayList<ChessPiece> chessPieces = new ArrayList<ChessPiece>();
     public ChessPiece selectedPiece;
+
+    public PromotionActions selectedPieceActions;
     public ArrayList<Point> readyToMoveSquares = new ArrayList<Point>();
     public ArrayList<Point> readyToCaptureSquares = new ArrayList<Point>();
 
@@ -93,22 +95,22 @@ public class ChessGUI{
         public void actionPerformed(ActionEvent e) {
             switch(chp.type){
                 case SILVERGEN:
-                    chp.type = ChessPiece.pieceType.SILVERGEN_P;
+                    chp.type = PieceType.SILVERGEN_P;
                     break;
                 case KNIGHT:
-                    chp.type = ChessPiece.pieceType.KNIGHT_P;
+                    chp.type = PieceType.KNIGHT_P;
                     break;
                 case LANCE:
-                    chp.type = ChessPiece.pieceType.LANCE_P;
+                    chp.type = PieceType.LANCE_P;
                     break;
                 case PAWN:
-                    chp.type = ChessPiece.pieceType.PAWN_P;
+                    chp.type = PieceType.PAWN_P;
                     break;
                 case ROOK:
-                    chp.type = ChessPiece.pieceType.ROOK_P;
+                    chp.type = PieceType.ROOK_P;
                     break;
                 case BISHOP:
-                    chp.type = ChessPiece.pieceType.BISHOP_P;
+                    chp.type = PieceType.BISHOP_P;
             }
             redrawBoard();
         }
@@ -126,14 +128,14 @@ public class ChessGUI{
                 selectedPiece.x = rtm.x;
                 selectedPiece.y = rtm.y;
 
-                if(selectedPiece.mustAdd) {
+                if(selectedPieceActions.mustAdd) {
                     chessPieces.add(selectedPiece);
-                    if(selectedPiece.mustAddplayer==1) {
-                        p1CapturedSquares[selectedPiece.mustAddbutIndex].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[selectedPiece.mustAddbutIndex].getText()) - 1));
+                    if(selectedPieceActions.mustAddplayer==1) {
+                        p1CapturedSquares[selectedPieceActions.mustAddbutIndex].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[selectedPieceActions.mustAddbutIndex].getText()) - 1));
                     }else{
-                        p2CapturedSquares[selectedPiece.mustAddbutIndex].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[selectedPiece.mustAddbutIndex].getText()) - 1));
+                        p2CapturedSquares[selectedPieceActions.mustAddbutIndex].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[selectedPieceActions.mustAddbutIndex].getText()) - 1));
                     }
-                    selectedPiece.mustAdd = false;
+                    selectedPieceActions.mustAdd = false;
                 }
                 //redrawBoard();
                 isHandled=true;
@@ -153,7 +155,7 @@ public class ChessGUI{
                     for(ChessPiece chp : chessPieces) {
                         if (chp.x == rtm.x && chp.y == rtm.y) {
                             //p1CapturedPieces.add(chp);
-                            if(chp.type == ChessPiece.pieceType.KING){
+                            if(chp.type == PieceType.KING){
                                 JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
                                 turn=3;
                             }
@@ -166,7 +168,7 @@ public class ChessGUI{
                     for(ChessPiece chp : chessPieces) {
                         if (chp.x == rtm.x && chp.y == rtm.y) {
                             //p2CapturedPieces.add(chp);
-                            if(chp.type == ChessPiece.pieceType.KING){
+                            if(chp.type == PieceType.KING){
                                 JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
                                 turn=3;
                             }
@@ -219,14 +221,14 @@ public class ChessGUI{
             }else{
                 ChessPiece pieceGoingToCapture = getPieceAt(pm.finalPos.x,pm.finalPos.y);
                 if(chessPieces.get(pm.chessPieceIndex).player == 1){
-                    if(pieceGoingToCapture.type == ChessPiece.pieceType.KING){
+                    if(pieceGoingToCapture.type == PieceType.KING){
                         JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
                         turn=3;
                     }
                     addP1CapturedPiece(pieceGoingToCapture);
                     chessPieces.remove(pieceGoingToCapture);
                 }else{
-                    if(pieceGoingToCapture.type == ChessPiece.pieceType.KING){
+                    if(pieceGoingToCapture.type == PieceType.KING){
                         JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
                         turn=3;
                     }
@@ -301,11 +303,11 @@ public class ChessGUI{
     }
 
     private class CapturedPieceButtonActionListener implements ActionListener {
-        private ChessPiece.pieceType pieceKind;
+        private PieceType pieceKind;
         private int player;
         private int butIndex;
 
-        public CapturedPieceButtonActionListener(int player,ChessPiece.pieceType pieceKind,int butIndex) {
+        public CapturedPieceButtonActionListener(int player,PieceType pieceKind,int butIndex) {
             this.player = player;
             this.pieceKind = pieceKind;
             this.butIndex = butIndex;
@@ -321,15 +323,15 @@ public class ChessGUI{
                 }
                 if (b) {
                     ChessPiece droppingPiece = new ChessPiece(player, pieceKind, 0, 0);
-                    droppingPiece.mustAdd = true;
-                    droppingPiece.mustAddbutIndex = butIndex;
-                    droppingPiece.mustAddplayer = player;
+                    selectedPieceActions.mustAdd = true;
+                    selectedPieceActions.mustAddbutIndex = butIndex;
+                    selectedPieceActions.mustAddplayer = player;
                     selectedPiece = droppingPiece;
                     readyToMoveSquares = new ArrayList<Point>();
                     readyToCaptureSquares = new ArrayList<Point>();
 
                     redrawBoard();
-                    if (pieceKind != ChessPiece.pieceType.PAWN) {
+                    if (pieceKind != PieceType.PAWN) {
                         for (int ii = 0; ii < 9; ii++) {
                             for (int jj = 0; jj < 9; jj++) {
                                 if (isOccupied(ii, jj) == 0) {
@@ -346,7 +348,7 @@ public class ChessGUI{
                                 //check for pawn
                                 for(ChessPiece chp : chessPieces){
                                     if(chp.x == ii && chp.y == jj){
-                                        if(chp.player == player && chp.type == ChessPiece.pieceType.PAWN){
+                                        if(chp.player == player && chp.type == PieceType.PAWN){
                                             isHavePawn = true;
                                             break;
                                         }
@@ -372,22 +374,22 @@ public class ChessGUI{
     private void depromote(ChessPiece chp){
         switch(chp.type){
             case SILVERGEN_P:
-                chp.type = ChessPiece.pieceType.SILVERGEN;
+                chp.type = PieceType.SILVERGEN;
                 break;
             case KNIGHT_P:
-                chp.type = ChessPiece.pieceType.KNIGHT;
+                chp.type = PieceType.KNIGHT;
                 break;
             case LANCE_P:
-                chp.type = ChessPiece.pieceType.LANCE;
+                chp.type = PieceType.LANCE;
                 break;
             case PAWN_P:
-                chp.type = ChessPiece.pieceType.PAWN;
+                chp.type = PieceType.PAWN;
                 break;
             case ROOK_P:
-                chp.type = ChessPiece.pieceType.ROOK;
+                chp.type = PieceType.ROOK;
                 break;
             case BISHOP_P:
-                chp.type = ChessPiece.pieceType.BISHOP;
+                chp.type = PieceType.BISHOP;
                 break;
         }
     }
@@ -618,8 +620,8 @@ public class ChessGUI{
     }
 
     private boolean isPromotable(ChessPiece chp) {
-        if (chp.type == ChessPiece.pieceType.LANCE || chp.type == ChessPiece.pieceType.PAWN || chp.type == ChessPiece.pieceType.SILVERGEN
-                || chp.type == ChessPiece.pieceType.KNIGHT || chp.type == ChessPiece.pieceType.ROOK || chp.type == ChessPiece.pieceType.BISHOP){
+        if (chp.type == PieceType.LANCE || chp.type == PieceType.PAWN || chp.type == PieceType.SILVERGEN
+                || chp.type == PieceType.KNIGHT || chp.type == PieceType.ROOK || chp.type == PieceType.BISHOP){
             if (chp.player == 1) {
                 if (chp.y <= 2) {
                     return true;
@@ -675,19 +677,19 @@ public class ChessGUI{
         p1cp.setBackground(ochre);
 
         p1CapturedSquares[0] = new JButton("0",new ImageIcon(knightImage1));
-        p1CapturedSquares[0].addActionListener(new CapturedPieceButtonActionListener(1, ChessPiece.pieceType.KNIGHT,0));
+        p1CapturedSquares[0].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.KNIGHT,0));
         p1CapturedSquares[1] = new JButton("0",new ImageIcon(bishopImage1));
-        p1CapturedSquares[1].addActionListener(new CapturedPieceButtonActionListener(1, ChessPiece.pieceType.BISHOP,1));
+        p1CapturedSquares[1].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.BISHOP,1));
         p1CapturedSquares[2] = new JButton("0",new ImageIcon(rookImage1));
-        p1CapturedSquares[2].addActionListener(new CapturedPieceButtonActionListener(1, ChessPiece.pieceType.ROOK,2));
+        p1CapturedSquares[2].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.ROOK,2));
         p1CapturedSquares[3] = new JButton("0",new ImageIcon(goldImage1));
-        p1CapturedSquares[3].addActionListener(new CapturedPieceButtonActionListener(1, ChessPiece.pieceType.GOLDGEN,3));
+        p1CapturedSquares[3].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.GOLDGEN,3));
         p1CapturedSquares[4] = new JButton("0",new ImageIcon(silverImage1));
-        p1CapturedSquares[4].addActionListener(new CapturedPieceButtonActionListener(1, ChessPiece.pieceType.SILVERGEN,4));
+        p1CapturedSquares[4].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.SILVERGEN,4));
         p1CapturedSquares[5] = new JButton("0",new ImageIcon(pawnImage1));
-        p1CapturedSquares[5].addActionListener(new CapturedPieceButtonActionListener(1, ChessPiece.pieceType.PAWN,5));
+        p1CapturedSquares[5].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.PAWN,5));
         p1CapturedSquares[6] = new JButton("0",new ImageIcon(lanceImage1));
-        p1CapturedSquares[6].addActionListener(new CapturedPieceButtonActionListener(1, ChessPiece.pieceType.LANCE,6));
+        p1CapturedSquares[6].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.LANCE,6));
 
         for(int g=0;g<7;g++){
             p1CapturedSquares[g].setFont(new Font("Segoe UI",Font.BOLD , 28));
@@ -709,19 +711,19 @@ public class ChessGUI{
         p2cp.setBackground(ochre);
 
         p2CapturedSquares[0] = new JButton("0",new ImageIcon(pawnImage2));
-        p2CapturedSquares[0].addActionListener(new CapturedPieceButtonActionListener(2, ChessPiece.pieceType.PAWN,0));
+        p2CapturedSquares[0].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.PAWN,0));
         p2CapturedSquares[1] = new JButton("0",new ImageIcon(lanceImage2));
-        p2CapturedSquares[1].addActionListener(new CapturedPieceButtonActionListener(2, ChessPiece.pieceType.LANCE,1));
+        p2CapturedSquares[1].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.LANCE,1));
         p2CapturedSquares[2] = new JButton("0",new ImageIcon(goldImage2));
-        p2CapturedSquares[2].addActionListener(new CapturedPieceButtonActionListener(2, ChessPiece.pieceType.GOLDGEN,2));
+        p2CapturedSquares[2].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.GOLDGEN,2));
         p2CapturedSquares[3] = new JButton("0",new ImageIcon(silverImage2));
-        p2CapturedSquares[3].addActionListener(new CapturedPieceButtonActionListener(2, ChessPiece.pieceType.SILVERGEN,3));
+        p2CapturedSquares[3].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.SILVERGEN,3));
         p2CapturedSquares[4] = new JButton("0",new ImageIcon(bishopImage2));
-        p2CapturedSquares[4].addActionListener(new CapturedPieceButtonActionListener(2, ChessPiece.pieceType.BISHOP,4));
+        p2CapturedSquares[4].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.BISHOP,4));
         p2CapturedSquares[5] = new JButton("0",new ImageIcon(rookImage2));
-        p2CapturedSquares[5].addActionListener(new CapturedPieceButtonActionListener(2, ChessPiece.pieceType.ROOK,5));
+        p2CapturedSquares[5].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.ROOK,5));
         p2CapturedSquares[6] = new JButton("0",new ImageIcon(knightImage2));
-        p2CapturedSquares[6].addActionListener(new CapturedPieceButtonActionListener(2, ChessPiece.pieceType.KNIGHT,6));
+        p2CapturedSquares[6].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.KNIGHT,6));
 
         for(int g=0;g<7;g++){
             p2CapturedSquares[g].setFont(new Font("Segoe UI",Font.BOLD , 28));
@@ -841,38 +843,38 @@ public class ChessGUI{
 
         chessPieces = new ArrayList<ChessPiece>();
 
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.LANCE,0,8));
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.KNIGHT,1,8));
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.SILVERGEN,2,8));
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.GOLDGEN,3,8));
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.KING,4,8));
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.GOLDGEN,5,8));
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.SILVERGEN,6,8));
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.KNIGHT,7,8));
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.LANCE,8,8));
+        chessPieces.add(new ChessPiece(1, PieceType.LANCE,0,8));
+        chessPieces.add(new ChessPiece(1, PieceType.KNIGHT,1,8));
+        chessPieces.add(new ChessPiece(1, PieceType.SILVERGEN,2,8));
+        chessPieces.add(new ChessPiece(1, PieceType.GOLDGEN,3,8));
+        chessPieces.add(new ChessPiece(1, PieceType.KING,4,8));
+        chessPieces.add(new ChessPiece(1, PieceType.GOLDGEN,5,8));
+        chessPieces.add(new ChessPiece(1, PieceType.SILVERGEN,6,8));
+        chessPieces.add(new ChessPiece(1, PieceType.KNIGHT,7,8));
+        chessPieces.add(new ChessPiece(1, PieceType.LANCE,8,8));
 
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.BISHOP,1,7));
-        chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.ROOK,7,7));
+        chessPieces.add(new ChessPiece(1, PieceType.BISHOP,1,7));
+        chessPieces.add(new ChessPiece(1, PieceType.ROOK,7,7));
         
         for(int pawni=0;pawni<9;pawni++){
-            chessPieces.add(new ChessPiece(1, ChessPiece.pieceType.PAWN,pawni,6));
+            chessPieces.add(new ChessPiece(1, PieceType.PAWN,pawni,6));
         }
 
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.LANCE,0,0));
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.KNIGHT,1,0));
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.SILVERGEN,2,0));
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.GOLDGEN,3,0));
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.KING,4,0));
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.GOLDGEN,5,0));
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.SILVERGEN,6,0));
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.KNIGHT,7,0));
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.LANCE,8,0));
+        chessPieces.add(new ChessPiece(2, PieceType.LANCE,0,0));
+        chessPieces.add(new ChessPiece(2, PieceType.KNIGHT,1,0));
+        chessPieces.add(new ChessPiece(2, PieceType.SILVERGEN,2,0));
+        chessPieces.add(new ChessPiece(2, PieceType.GOLDGEN,3,0));
+        chessPieces.add(new ChessPiece(2, PieceType.KING,4,0));
+        chessPieces.add(new ChessPiece(2, PieceType.GOLDGEN,5,0));
+        chessPieces.add(new ChessPiece(2, PieceType.SILVERGEN,6,0));
+        chessPieces.add(new ChessPiece(2, PieceType.KNIGHT,7,0));
+        chessPieces.add(new ChessPiece(2, PieceType.LANCE,8,0));
 
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.ROOK,1,1));
-        chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.BISHOP,7,1));
+        chessPieces.add(new ChessPiece(2, PieceType.ROOK,1,1));
+        chessPieces.add(new ChessPiece(2, PieceType.BISHOP,7,1));
 
         for(int pawni=0;pawni<9;pawni++){
-            chessPieces.add(new ChessPiece(2, ChessPiece.pieceType.PAWN,pawni,2));
+            chessPieces.add(new ChessPiece(2, PieceType.PAWN,pawni,2));
         }
 
         turn = 1;

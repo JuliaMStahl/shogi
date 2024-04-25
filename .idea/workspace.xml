@@ -8,8 +8,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b0c0d535-c47c-49a5-b0cd-e7b8073105e6" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/PieceType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/PromotionActions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/1/b142623f54ee523e6e437c3a7ed7f68320c3a926" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/1/b142623f54ee523e6e437c3a7ed7f68320c3a926" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/9/b9a197cafd8d825b5aba4d105fed6ed3f0298045" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/9/b9a197cafd8d825b5aba4d105fed6ed3f0298045" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shogi.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Shogi.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ChessGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChessGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ChessPiece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChessPiece.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,6 +87,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -203,7 +211,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/camilavincensi/Shogi",
+    "last_opened_file_path": "/Users/camilavincensi/Manutenção de software/MS29S---Projeto",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -401,6 +409,7 @@
       <workItem from="1480243550776" duration="618000" />
       <workItem from="1490014579086" duration="24000" />
       <workItem from="1710704952320" duration="798000" />
+      <workItem from="1713742584341" duration="3036000" />
     </task>
     <servers />
   </component>
