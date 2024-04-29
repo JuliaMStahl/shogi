@@ -115,40 +115,38 @@ public class ChessGUI{
             redrawBoard();
         }
     }
-
-    //Chess Square Buttons Handler
-    public void handleButtonPress(int x,int y){
-
+    public boolean handlePieceMove (int x, int y) {
         boolean isHandled = false;
-
-        //Handle Piece Move
-        for(Point rtm : readyToMoveSquares){
-            if(rtm.x == x && rtm.y == y) {
+        for (Point rtm : readyToMoveSquares) {
+            if (rtm.x == x && rtm.y == y) {
                 //Move to Square
                 selectedPiece.x = rtm.x;
                 selectedPiece.y = rtm.y;
 
-                if(selectedPieceActions.mustAdd) {
+                if (selectedPieceActions.mustAdd) {
                     chessPieces.add(selectedPiece);
-                    if(selectedPieceActions.mustAddplayer==1) {
+                    if (selectedPieceActions.mustAddplayer == 1) {
                         p1CapturedSquares[selectedPieceActions.mustAddbutIndex].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[selectedPieceActions.mustAddbutIndex].getText()) - 1));
-                    }else{
+                    } else {
                         p2CapturedSquares[selectedPieceActions.mustAddbutIndex].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[selectedPieceActions.mustAddbutIndex].getText()) - 1));
                     }
                     selectedPieceActions.mustAdd = false;
                 }
                 //redrawBoard();
-                isHandled=true;
+                isHandled = true;
                 if (turn == 1) {
                     turn = 2;
-                } else if(turn==2){
+                } else if (turn == 2) {
                     turn = 1;
                 }
                 break;
             }
         }
+        return isHandled;
+    }
 
-        //Handle Piece Capture
+    public boolean handlePieceCapture (int x, int y) {
+        boolean isHandled = false;
         for(Point rtm : readyToCaptureSquares){
             if(rtm.x == x && rtm.y == y) {
                 if(selectedPiece.player == 1){
@@ -192,52 +190,101 @@ public class ChessGUI{
             }
         }
 
+        return isHandled;
+    }
 
-        /*for(int ii=0;ii<9;ii++){
-            for(int jj=0;jj<9;jj++){
-                chessBoardSquares[ii][jj].setBackground(mainbg);
-                chessBoardSquares[ii][jj].setComponentPopupMenu(null);
+    private void checkPromotion (ChessPiece chp, int x, int y) {
+        if (isPromotable(chp)) {
+            JPopupMenu popup = new JPopupMenu();
+            JMenuItem promoteButton = new JMenuItem("Promote !");
+            promoteButton.addActionListener(new PromoteButtonActionListener(chp));
+            popup.add(promoteButton);
+            chessBoardSquares[x][y].setComponentPopupMenu(popup);
+        } else {
+            chessBoardSquares[x][y].setComponentPopupMenu(null);
+        }
+    }
+
+    private void pieceMove (ChessPiece chp) {
+        for (Point move : getPossibleMoves(chp)) {
+            int pf = (chp.player == 2) ? 1 : -1;
+            int newx = (chp.x + move.x * pf);
+            int newy = (chp.y + move.y * pf);
+
+            if (newx >= 0 && newy >= 0 && newx <= 8 && newy <= 8) {
+                if (isOccupied(newx, newy) == 0) {
+                    chessBoardSquares[newx][newy].setBackground(Color.cyan);
+                    readyToMoveSquares.add(new Point(newx, newy));
+                } else if (isOccupied(newx, newy) != chp.player) {
+                    chessBoardSquares[newx][newy].setBackground(Color.magenta);
+                    readyToCaptureSquares.add(new Point(newx, newy));
+                }
             }
-        }*/
+        }
+    }
+    public void handlePieceSelect(int x, int y) {
+        for(ChessPiece chp : chessPieces){
+            if(chp.x == x && chp.y == y) {
+                //Select the Piece
+                if (turn == chp.player) {
+                    selectedPiece = chp;
+                    chessBoardSquares[x][y].setBackground(Color.green);
+                    checkPromotion(chp, x, y);
+                    pieceMove(chp);
+                }
+            }else{
+                //chessBoardSquares[x][y].setBackground(new Color(230,230,230));
+            }
+        }
+    }
+
+    private PieceMove iAPlays () {
+
+        PieceMove pm = cpuAI.playMove();
+        System.out.println("AI Moving " + pm.chessPieceIndex + " to " + pm.finalPos.toString());
+
+        return pm;
+
+    }
+
+    private void showWinner (PieceMove pm, ChessPiece pieceGoingToCapture ) {
+
+        if(chessPieces.get(pm.chessPieceIndex).player == 1){
+            if(pieceGoingToCapture.type == PieceType.KING){
+                JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+                turn=3;
+            }
+            addP1CapturedPiece(pieceGoingToCapture);
+            chessPieces.remove(pieceGoingToCapture);
+        }else{
+            if(pieceGoingToCapture.type == PieceType.KING){
+                JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+                turn=3;
+            }
+            addP2CapturedPiece(pieceGoingToCapture);
+            chessPieces.remove(pieceGoingToCapture);
+        }
+
+    }
+
+    private boolean playGame() {
+
+        boolean isHandled = false;
 
         if(turn==2 && isPlayingWithAI){
-            //AI Plays Here !'
-            PieceMove pm = cpuAI.playMove();
-            System.out.println("AI Moving " + pm.chessPieceIndex + " to " + pm.finalPos.toString());
+            PieceMove pm = iAPlays();
+
             if(!pm.isGoingToCapture){
                 chessPieces.get(pm.chessPieceIndex).x= pm.finalPos.x;
                 chessPieces.get(pm.chessPieceIndex).y= pm.finalPos.y;
-
-                //TODO : AI NOT SUPPORTS DROPPING AT THIS TIME
-                /*if(selectedPiece.mustAdd) {
-                    chessPieces.add(selectedPiece);
-                    if(selectedPiece.mustAddplayer==1) {
-                        p1CapturedSquares[selectedPiece.mustAddbutIndex].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[selectedPiece.mustAddbutIndex].getText()) - 1));
-                    }else{
-                        p2CapturedSquares[selectedPiece.mustAddbutIndex].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[selectedPiece.mustAddbutIndex].getText()) - 1));
-                    }
-                    selectedPiece.mustAdd = false;
-                }*/
             }else{
                 ChessPiece pieceGoingToCapture = getPieceAt(pm.finalPos.x,pm.finalPos.y);
-                if(chessPieces.get(pm.chessPieceIndex).player == 1){
-                    if(pieceGoingToCapture.type == PieceType.KING){
-                        JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
-                        turn=3;
-                    }
-                    addP1CapturedPiece(pieceGoingToCapture);
-                    chessPieces.remove(pieceGoingToCapture);
-                }else{
-                    if(pieceGoingToCapture.type == PieceType.KING){
-                        JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
-                        turn=3;
-                    }
-                    addP2CapturedPiece(pieceGoingToCapture);
-                    chessPieces.remove(pieceGoingToCapture);
-                }
+
+                showWinner(pm, pieceGoingToCapture);
+
                 //Move to Square
-                    chessPieces.get(pm.chessPieceIndex).x= pm.finalPos.x;
-                    chessPieces.get(pm.chessPieceIndex).y= pm.finalPos.y;
+                chessPieces.get(pm.chessPieceIndex).x= pm.finalPos.x;
+                chessPieces.get(pm.chessPieceIndex).y= pm.finalPos.y;
             }
             if (turn == 1) {
                 turn = 2;
@@ -246,6 +293,17 @@ public class ChessGUI{
             }
             isHandled = true;
         }
+        return isHandled;
+    }
+    public void handleButtonPress(int x,int y){
+
+        boolean isHandled;
+
+        handlePieceMove(x, y);
+
+        handlePieceCapture(x, y);
+
+       isHandled = playGame();
 
 
         selectedPiece = null;
@@ -257,49 +315,7 @@ public class ChessGUI{
         if(isHandled){
             return;
         }
-        //Clear Previous State
-
-
-
-        //Handle Piece Select
-        for(ChessPiece chp : chessPieces){
-            if(chp.x == x && chp.y == y) {
-                //Select the Piece
-                if (turn == chp.player) {
-                    selectedPiece = chp;
-                    chessBoardSquares[x][y].setBackground(Color.green);
-
-                    //Check for Promotion
-                    if (isPromotable(chp)) {
-                        JPopupMenu popup = new JPopupMenu();
-                        JMenuItem promoteButton = new JMenuItem("Promote !");
-                        promoteButton.addActionListener(new PromoteButtonActionListener(chp));
-                        popup.add(promoteButton);
-                        chessBoardSquares[x][y].setComponentPopupMenu(popup);
-                    } else {
-                        chessBoardSquares[x][y].setComponentPopupMenu(null);
-                    }
-
-                    for (Point move : getPossibleMoves(chp)) {
-                        int pf = (chp.player == 2) ? 1 : -1;
-                        int newx = (chp.x + move.x * pf);
-                        int newy = (chp.y + move.y * pf);
-
-                        if (newx >= 0 && newy >= 0 && newx <= 8 && newy <= 8) {
-                            if (isOccupied(newx, newy) == 0) {
-                                chessBoardSquares[newx][newy].setBackground(Color.cyan);
-                                readyToMoveSquares.add(new Point(newx, newy));
-                            } else if (isOccupied(newx, newy) != chp.player) {
-                                chessBoardSquares[newx][newy].setBackground(Color.magenta);
-                                readyToCaptureSquares.add(new Point(newx, newy));
-                            }
-                        }
-                    }
-                }
-            }else{
-                //chessBoardSquares[x][y].setBackground(new Color(230,230,230));
-            }
-        }
+        handlePieceSelect(x, y);
     }
 
     private class CapturedPieceButtonActionListener implements ActionListener {
