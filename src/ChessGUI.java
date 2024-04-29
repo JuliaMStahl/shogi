@@ -16,6 +16,7 @@ public class ChessGUI{
     public ArrayList<ChessPiece> chessPieces = new ArrayList<ChessPiece>();
     public ChessPiece selectedPiece;
 
+    private final JLabel turnPlay = new JLabel();
     public PromotionActions selectedPieceActions;
     public ArrayList<Point> readyToMoveSquares = new ArrayList<Point>();
     public ArrayList<Point> readyToCaptureSquares = new ArrayList<Point>();
@@ -62,9 +63,6 @@ public class ChessGUI{
     private JPanel chessBoard;
 
     private int turn = 1;
-
-    private final JLabel message = new JLabel(
-            "AKP Shogi v0.9");
 
     private Color mainbg = new Color(230,230,230);
     private Color ochre = new Color(204,119,34);
@@ -662,6 +660,17 @@ public class ChessGUI{
         JToolBar tools = new JToolBar();
         tools.setFloatable(false);
 
+        gui.add(tools, BorderLayout.NORTH);
+
+        // Configuração do JLabel para mostrar a vez do jogador
+        turnPlay.setHorizontalAlignment(JLabel.CENTER);
+        turnPlay.setForeground(Color.RED); // Cor do texto definida como vermelha
+        turnPlay.setFont(new Font("Arial", Font.BOLD, 14)); // Definição da fonte, opcional
+
+        JPanel messagePanel = new JPanel(new BorderLayout()); // Criando um novo JPanel para centralizar a mensagem
+        messagePanel.add(turnPlay, BorderLayout.CENTER); // Adicionando o JLabel ao centro do JPanel
+        tools.add(messagePanel); // Adicionando o JPanel ao JToolBar
+
         gui.setBackground(ochre);
         gui.add(tools, BorderLayout.NORTH);
 
@@ -913,6 +922,14 @@ public class ChessGUI{
                 chessBoardSquares[ii][jj].setBackground(mainbg);
                 //chessBoardSquares[ii][jj].setComponentPopupMenu(null);
             }
+        }
+
+        if (turn == 1) {
+            turnPlay.setText("Turn: Player 1");
+        } else if (turn == 2) {
+            turnPlay.setText("Turn: Player 2");
+        } else if (turn == 3) {
+            turnPlay.setText("Game Over");
         }
 
         for(ChessPiece chp : chessPieces){
