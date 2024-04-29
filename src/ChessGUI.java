@@ -654,9 +654,13 @@ public class ChessGUI{
     }
 
     public final void initializeGui() {
-        // loads the images for the chess pieces
         loadImages();
+        setupToolBar();
+        setupMainPanel();
+        setupChessBoard();
+    }
 
+    private void setupToolBar() {
         JToolBar tools = new JToolBar();
         tools.setFloatable(false);
 
@@ -672,149 +676,104 @@ public class ChessGUI{
         tools.add(messagePanel); // Adicionando o JPanel ao JToolBar
 
         gui.setBackground(ochre);
+        tools.add(createGameAction("New Game (2 Player)", false));
+        tools.add(createGameAction("New Game (with AI)", true));
         gui.add(tools, BorderLayout.NORTH);
+    }
 
-        Action newGame2pAction = new AbstractAction("New Game (2 Player)") {
+    private Action createGameAction(String name, boolean isAI) {
+        return new AbstractAction(name) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setupNewGame(false);
+                setupNewGame(isAI);
             }
         };
-        tools.add(newGame2pAction);
+    }
 
-        Action newGame1pAction = new AbstractAction("New Game (with AI)") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setupNewGame(true);
-            }
-        };
-        tools.add(newGame1pAction);
-
-
-        //tools.add(message);
-
-
+    private void setupMainPanel() {
         JPanel cp = new JPanel(new BorderLayout());
         cp.setBackground(ochre);
-        cp.setBorder(new EmptyBorder(9,9,9,9));
+        cp.setBorder(new EmptyBorder(9, 9, 9, 9));
 
-        JPanel p1cp = new JPanel(new GridLayout(4,4));
-        p1cp.setBackground(ochre);
+        cp.add(setupCapturedPiecesPanel(1), BorderLayout.SOUTH);
+        cp.add(setupCapturedPiecesPanel(2), BorderLayout.NORTH);
 
-        p1CapturedSquares[0] = new JButton("0",new ImageIcon(knightImage1));
-        p1CapturedSquares[0].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.KNIGHT,0));
-        p1CapturedSquares[1] = new JButton("0",new ImageIcon(bishopImage1));
-        p1CapturedSquares[1].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.BISHOP,1));
-        p1CapturedSquares[2] = new JButton("0",new ImageIcon(rookImage1));
-        p1CapturedSquares[2].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.ROOK,2));
-        p1CapturedSquares[3] = new JButton("0",new ImageIcon(goldImage1));
-        p1CapturedSquares[3].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.GOLDGEN,3));
-        p1CapturedSquares[4] = new JButton("0",new ImageIcon(silverImage1));
-        p1CapturedSquares[4].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.SILVERGEN,4));
-        p1CapturedSquares[5] = new JButton("0",new ImageIcon(pawnImage1));
-        p1CapturedSquares[5].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.PAWN,5));
-        p1CapturedSquares[6] = new JButton("0",new ImageIcon(lanceImage1));
-        p1CapturedSquares[6].addActionListener(new CapturedPieceButtonActionListener(1, PieceType.LANCE,6));
+        gui.add(cp, BorderLayout.WEST);
+    }
 
-        for(int g=0;g<7;g++){
-            p1CapturedSquares[g].setFont(new Font("Segoe UI",Font.BOLD , 28));
-            p1CapturedSquares[g].setOpaque(false);
-            p1CapturedSquares[g].setContentAreaFilled(false);
-            p1CapturedSquares[g].setBorderPainted(false);
-            if(g==1){
-                JButton emptyButton = new JButton("",new ImageIcon(new BufferedImage(70, 80, BufferedImage.TYPE_INT_ARGB)));
-                emptyButton.setOpaque(false);
-                emptyButton.setContentAreaFilled(false);
-                emptyButton.setBorderPainted(false);
-                p1cp.add(emptyButton);
-            }
-            p1cp.add(p1CapturedSquares[g]);
+    private JPanel setupCapturedPiecesPanel(int playerNumber) {
+        JPanel panel = new JPanel(new GridLayout(4, 4));
+        panel.setBackground(ochre);
+        JButton[] capturedSquares = playerNumber == 1 ? p1CapturedSquares : p2CapturedSquares;
+        ImageIcon[] images = playerNumber == 1 ?
+                new ImageIcon[] {
+                        new ImageIcon(knightImage1),
+                        new ImageIcon(bishopImage1),
+                        new ImageIcon(rookImage1),
+                        new ImageIcon(goldImage1),
+                        new ImageIcon(silverImage1),
+                        new ImageIcon(pawnImage1),
+                        new ImageIcon(lanceImage1)
+                } :
+                new ImageIcon[] {
+                        new ImageIcon(pawnImage2),
+                        new ImageIcon(lanceImage2),
+                        new ImageIcon(goldImage2),
+                        new ImageIcon(silverImage2),
+                        new ImageIcon(bishopImage2),
+                        new ImageIcon(rookImage2),
+                        new ImageIcon(knightImage2)
+                };
+
+        PieceType[] types = {
+                PieceType.PAWN, PieceType.LANCE, PieceType.KNIGHT,
+                PieceType.SILVERGEN, PieceType.GOLDGEN, PieceType.BISHOP, PieceType.ROOK
+        };
+
+        for (int i = 0; i < capturedSquares.length; i++) {
+            capturedSquares[i] = createCapturedPieceButton("0", images[i].getImage(), playerNumber, types[i], i);
+            panel.add(capturedSquares[i]);
         }
 
+        return panel;
+    }
 
-        JPanel p2cp = new JPanel(new GridLayout(4,4));
-        p2cp.setBackground(ochre);
+    private JButton createCapturedPieceButton(String text, Image image, int playerNumber, PieceType type, int index) {
+        JButton button = new JButton(text, new ImageIcon(image));
+        button.addActionListener(new CapturedPieceButtonActionListener(playerNumber, type, index));
+        styleButton(button);
+        return button;
+    }
 
-        p2CapturedSquares[0] = new JButton("0",new ImageIcon(pawnImage2));
-        p2CapturedSquares[0].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.PAWN,0));
-        p2CapturedSquares[1] = new JButton("0",new ImageIcon(lanceImage2));
-        p2CapturedSquares[1].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.LANCE,1));
-        p2CapturedSquares[2] = new JButton("0",new ImageIcon(goldImage2));
-        p2CapturedSquares[2].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.GOLDGEN,2));
-        p2CapturedSquares[3] = new JButton("0",new ImageIcon(silverImage2));
-        p2CapturedSquares[3].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.SILVERGEN,3));
-        p2CapturedSquares[4] = new JButton("0",new ImageIcon(bishopImage2));
-        p2CapturedSquares[4].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.BISHOP,4));
-        p2CapturedSquares[5] = new JButton("0",new ImageIcon(rookImage2));
-        p2CapturedSquares[5].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.ROOK,5));
-        p2CapturedSquares[6] = new JButton("0",new ImageIcon(knightImage2));
-        p2CapturedSquares[6].addActionListener(new CapturedPieceButtonActionListener(2, PieceType.KNIGHT,6));
+    private void styleButton(JButton button) {
+        button.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+    }
 
-        for(int g=0;g<7;g++){
-            p2CapturedSquares[g].setFont(new Font("Segoe UI",Font.BOLD , 28));
-            p2CapturedSquares[g].setOpaque(false);
-            p2CapturedSquares[g].setContentAreaFilled(false);
-            p2CapturedSquares[g].setBorderPainted(false);
-            p2cp.add(p2CapturedSquares[g]);
-        }
-
-        cp.add(p1cp,BorderLayout.SOUTH);
-        cp.add(p2cp,BorderLayout.NORTH);
-
-
-        gui.add(cp,BorderLayout.WEST);
-
-        chessBoard = new JPanel(new GridLayout(9,9));
-
-        chessBoard.setBorder(new CompoundBorder(
-                new EmptyBorder(8,8,8,8),
-                new LineBorder(Color.BLACK)
-        ));
-        // Set BG Color
+    private void setupChessBoard() {
+        chessBoard = new JPanel(new GridLayout(9, 9));
+        chessBoard.setBorder(new CompoundBorder(new EmptyBorder(8, 8, 8, 8), new LineBorder(Color.BLACK)));
         chessBoard.setBackground(ochre);
 
-        /*JPanel boardConstrain = new JPanel(new GridBagLayout());
-        boardConstrain.setBackground(ochre);
-        boardConstrain.add(chessBoard);*/
-
-        //gui.add(boardConstrain);
+        // Preenchendo o tabuleiro verticalmente
+        for (int jj = 0; jj < chessBoardSquares[0].length; jj++) { // Itera pelas colunas
+            for (int ii = 0; ii < chessBoardSquares.length; ii++) { // Itera pelas linhas
+                chessBoardSquares[ii][jj] = createSquareButton(ii, jj);
+                chessBoard.add(chessBoardSquares[ii][jj]);
+            }
+        }
         gui.add(chessBoard);
+    }
 
-        // create the chess board squares
-        Insets buttonMargin = new Insets(2, 2, 2, 2);
-        for (int ii = 0; ii < chessBoardSquares.length; ii++) {
-            for (int jj = 0; jj < chessBoardSquares[ii].length; jj++) {
-                JButton b = new JButton();
-                b.setMargin(buttonMargin);
-
-                ImageIcon icon = new ImageIcon(
-                        new BufferedImage(70, 80, BufferedImage.TYPE_INT_ARGB));
-                b.setIcon(icon);
-
-                b.addActionListener(new ChessButtonActionListener(ii,jj));
-
-                Color brown = new Color(230,230,230);
-                b.setBackground(brown);
-                chessBoardSquares[ii][jj] = b;
-            }
-        }
-
-        /*
-         * fill the chess board
-         */
-        //chessBoard.add(new JLabel(""));
-        // fill the top row
-        /*for (int ii = 0; ii < 8; ii++) {
-            chessBoard.add(
-                    new JLabel(COLS.substring(ii, ii + 1),
-                            SwingConstants.CENTER));
-        }*/
-        // fill the black non-pawn piece row
-        for (int ii = 0; ii < 9; ii++) {
-            for (int jj = 0; jj < 9; jj++) {
-                chessBoard.add(chessBoardSquares[jj][ii]);
-            }
-        }
+    private JButton createSquareButton(int ii, int jj) {
+        JButton button = new JButton();
+        button.setMargin(new Insets(2, 2, 2, 2));
+        button.setIcon(new ImageIcon(new BufferedImage(70, 80, BufferedImage.TYPE_INT_ARGB)));
+        button.addActionListener(new ChessButtonActionListener(ii, jj)); // Passando coordenadas como argumentos
+        button.setBackground(new Color(230, 230, 230));
+        return button;
     }
 
     public final JComponent getGui() {
