@@ -69,6 +69,10 @@ public class ChessGUI{
     private Color mainbg = new Color(230,230,230);
     private Color ochre = new Color(204,119,34);
 
+    public static final int PLAYER_ONE = 1;
+
+    public static final int PLAYER_TWO = 2;
+
     //Chess Square Buttons ActionListener
     private class ChessButtonActionListener implements ActionListener {
         private int x;
@@ -149,7 +153,7 @@ public class ChessGUI{
         boolean isHandled = false;
         for(Point rtm : readyToCaptureSquares){
             if(rtm.x == x && rtm.y == y) {
-                if(selectedPiece.player == 1){
+                if(selectedPiece.player == PLAYER_ONE){
                     for(ChessPiece chp : chessPieces) {
                         if (chp.x == rtm.x && chp.y == rtm.y) {
                             //p1CapturedPieces.add(chp);
@@ -207,7 +211,7 @@ public class ChessGUI{
 
     private void pieceMove (ChessPiece chp) {
         for (Point move : getPossibleMoves(chp)) {
-            int pf = (chp.player == 2) ? 1 : -1;
+            int pf = (chp.player == PLAYER_TWO) ? 1 : -1;
             int newx = (chp.x + move.x * pf);
             int newy = (chp.y + move.y * pf);
 
@@ -249,7 +253,7 @@ public class ChessGUI{
 
     private void showWinner (PieceMove pm, ChessPiece pieceGoingToCapture ) {
 
-        if(chessPieces.get(pm.chessPieceIndex).player == 1){
+        if(chessPieces.get(pm.chessPieceIndex).player == PLAYER_ONE){
             if(pieceGoingToCapture.type == PieceType.KING){
                 JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
                 turn=3;
@@ -332,7 +336,7 @@ public class ChessGUI{
         public void actionPerformed(ActionEvent e) {
             boolean b;
             if (turn == player) {
-                if (player == 1) {
+                if (player == PLAYER_ONE) {
                     b = Integer.parseInt(p1CapturedSquares[butIndex].getText()) > 0;
                 } else {
                     b = Integer.parseInt(p2CapturedSquares[butIndex].getText()) > 0;
@@ -482,7 +486,7 @@ public class ChessGUI{
     //Get Each Piece Possible Moves
     public ArrayList<Point> getPossibleMoves(ChessPiece chp){
         ArrayList<Point> possibleMoves = new ArrayList<Point>();
-        int pf = (chp.player == 2) ? 1 : -1;
+        int pf = (chp.player == PLAYER_TWO) ? 1 : -1;
         switch(chp.type){
             case KING:
                 possibleMoves.add(new Point(-1,1));
@@ -615,7 +619,7 @@ public class ChessGUI{
     public int isOccupied(int x, int y) {
         for(ChessPiece chp : chessPieces){
             if(chp.x == x && chp.y == y){
-                if(chp.player == 1){
+                if(chp.player == PLAYER_ONE){
                     return 1;
                 }else{
                     return 2;
@@ -638,7 +642,7 @@ public class ChessGUI{
     private boolean isPromotable(ChessPiece chp) {
         if (chp.type == PieceType.LANCE || chp.type == PieceType.PAWN || chp.type == PieceType.SILVERGEN
                 || chp.type == PieceType.KNIGHT || chp.type == PieceType.ROOK || chp.type == PieceType.BISHOP){
-            if (chp.player == 1) {
+            if (chp.player == PLAYER_ONE) {
                 if (chp.y <= 2) {
                     return true;
                 }
@@ -693,8 +697,8 @@ public class ChessGUI{
     private JPanel setupCapturedPiecesPanel(int playerNumber) {
         JPanel panel = new JPanel(new GridLayout(4, 4));
         panel.setBackground(ochre);
-        JButton[] capturedSquares = playerNumber == 1 ? p1CapturedSquares : p2CapturedSquares;
-        ImageIcon[] images = playerNumber == 1 ?
+        JButton[] capturedSquares = playerNumber == PLAYER_ONE ? p1CapturedSquares : p2CapturedSquares;
+        ImageIcon[] images = playerNumber == PLAYER_ONE ?
                 new ImageIcon[] {
                         new ImageIcon(knightImage1),
                         new ImageIcon(bishopImage1),
@@ -873,7 +877,7 @@ public class ChessGUI{
         }
 
         for(ChessPiece chp : chessPieces){
-            if(chp.player == 1){
+            if(chp.player == PLAYER_ONE){
                 switch(chp.type){
                     case KING:
                         chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(kingImage1));
