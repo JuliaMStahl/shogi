@@ -97,24 +97,24 @@ public class ChessGUI{
         }
 
         public void actionPerformed(ActionEvent e) {
-            switch(chp.type){
+            switch(chp.getType()){
                 case SILVERGEN:
-                    chp.type = PieceType.SILVERGEN_P;
+                    chp.setType(PieceType.SILVERGEN_P);
                     break;
                 case KNIGHT:
-                    chp.type = PieceType.KNIGHT_P;
+                    chp.setType(PieceType.KNIGHT_P);
                     break;
                 case LANCE:
-                    chp.type = PieceType.LANCE_P;
+                    chp.setType(PieceType.LANCE_P);
                     break;
                 case PAWN:
-                    chp.type = PieceType.PAWN_P;
+                    chp.setType(PieceType.PAWN_P);
                     break;
                 case ROOK:
-                    chp.type = PieceType.ROOK_P;
+                    chp.setType(PieceType.ROOK_P);
                     break;
                 case BISHOP:
-                    chp.type = PieceType.BISHOP_P;
+                    chp.setType(PieceType.BISHOP_P);
             }
             redrawBoard();
         }
@@ -124,8 +124,8 @@ public class ChessGUI{
         for (Point rtm : readyToMoveSquares) {
             if (rtm.x == x && rtm.y == y) {
                 //Move to Square
-                selectedPiece.x = rtm.x;
-                selectedPiece.y = rtm.y;
+                selectedPiece.setX(rtm.x);
+                selectedPiece.setY(rtm.y);
 
                 if (selectedPieceActions.mustAdd) {
                     chessPieces.add(selectedPiece);
@@ -153,11 +153,11 @@ public class ChessGUI{
         boolean isHandled = false;
         for(Point rtm : readyToCaptureSquares){
             if(rtm.x == x && rtm.y == y) {
-                if(selectedPiece.player == PLAYER_ONE){
+                if(selectedPiece.getPlayer() == PLAYER_ONE){
                     for(ChessPiece chp : chessPieces) {
-                        if (chp.x == rtm.x && chp.y == rtm.y) {
+                        if (chp.getX() == rtm.x && chp.getY() == rtm.y) {
                             //p1CapturedPieces.add(chp);
-                            if(chp.type == PieceType.KING){
+                            if(chp.getType() == PieceType.KING){
                                 JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
                                 turn=3;
                             }
@@ -168,9 +168,9 @@ public class ChessGUI{
                     }
                 }else{
                     for(ChessPiece chp : chessPieces) {
-                        if (chp.x == rtm.x && chp.y == rtm.y) {
+                        if (chp.getX() == rtm.x && chp.getY() == rtm.y) {
                             //p2CapturedPieces.add(chp);
-                            if(chp.type == PieceType.KING){
+                            if(chp.getType() == PieceType.KING){
                                 JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
                                 turn=3;
                             }
@@ -181,8 +181,8 @@ public class ChessGUI{
                     }
                 }
                 //Move to Square
-                selectedPiece.x = rtm.x;
-                selectedPiece.y = rtm.y;
+                selectedPiece.setX(rtm.x);
+                selectedPiece.setY(rtm.y);
                 //redrawBoard();
                 isHandled=true;
                 if (turn == 1) {
@@ -211,15 +211,15 @@ public class ChessGUI{
 
     private void pieceMove (ChessPiece chp) {
         for (Point move : getPossibleMoves(chp)) {
-            int pf = (chp.player == PLAYER_TWO) ? 1 : -1;
-            int newx = (chp.x + move.x * pf);
-            int newy = (chp.y + move.y * pf);
+            int pf = (chp.getPlayer() == PLAYER_TWO) ? 1 : -1;
+            int newx = (chp.getX() + move.x * pf);
+            int newy = (chp.getY() + move.y * pf);
 
             if (newx >= 0 && newy >= 0 && newx <= 8 && newy <= 8) {
                 if (isOccupied(newx, newy) == 0) {
                     chessBoardSquares[newx][newy].setBackground(Color.cyan);
                     readyToMoveSquares.add(new Point(newx, newy));
-                } else if (isOccupied(newx, newy) != chp.player) {
+                } else if (isOccupied(newx, newy) != chp.getPlayer()) {
                     chessBoardSquares[newx][newy].setBackground(Color.magenta);
                     readyToCaptureSquares.add(new Point(newx, newy));
                 }
@@ -228,9 +228,9 @@ public class ChessGUI{
     }
     public void handlePieceSelect(int x, int y) {
         for(ChessPiece chp : chessPieces){
-            if(chp.x == x && chp.y == y) {
+            if(chp.getX() == x && chp.getY() == y) {
                 //Select the Piece
-                if (turn == chp.player) {
+                if (turn == chp.getPlayer()) {
                     selectedPiece = chp;
                     chessBoardSquares[x][y].setBackground(Color.green);
                     checkPromotion(chp, x, y);
@@ -253,15 +253,15 @@ public class ChessGUI{
 
     private void showWinner (PieceMove pm, ChessPiece pieceGoingToCapture ) {
 
-        if(chessPieces.get(pm.chessPieceIndex).player == PLAYER_ONE){
-            if(pieceGoingToCapture.type == PieceType.KING){
+        if(chessPieces.get(pm.chessPieceIndex).getPlayer() == PLAYER_ONE){
+            if(pieceGoingToCapture.getType() == PieceType.KING){
                 JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
                 turn=3;
             }
             addP1CapturedPiece(pieceGoingToCapture);
             chessPieces.remove(pieceGoingToCapture);
         }else{
-            if(pieceGoingToCapture.type == PieceType.KING){
+            if(pieceGoingToCapture.getType() == PieceType.KING){
                 JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
                 turn=3;
             }
@@ -279,16 +279,16 @@ public class ChessGUI{
             PieceMove pm = iAPlays();
 
             if(!pm.isGoingToCapture){
-                chessPieces.get(pm.chessPieceIndex).x= pm.finalPos.x;
-                chessPieces.get(pm.chessPieceIndex).y= pm.finalPos.y;
+                chessPieces.get(pm.chessPieceIndex).setX(pm.finalPos.x);
+                chessPieces.get(pm.chessPieceIndex).setY(pm.finalPos.y);
             }else{
                 ChessPiece pieceGoingToCapture = getPieceAt(pm.finalPos.x,pm.finalPos.y);
 
                 showWinner(pm, pieceGoingToCapture);
 
                 //Move to Square
-                chessPieces.get(pm.chessPieceIndex).x= pm.finalPos.x;
-                chessPieces.get(pm.chessPieceIndex).y= pm.finalPos.y;
+                chessPieces.get(pm.chessPieceIndex).setX(pm.finalPos.x);
+                chessPieces.get(pm.chessPieceIndex).setY(pm.finalPos.y);
             }
             if (turn == 1) {
                 turn = 2;
@@ -367,8 +367,8 @@ public class ChessGUI{
                             for(int jj=0;jj<9;jj++){
                                 //check for pawn
                                 for(ChessPiece chp : chessPieces){
-                                    if(chp.x == ii && chp.y == jj){
-                                        if(chp.player == player && chp.type == PieceType.PAWN){
+                                    if(chp.getX() == ii && chp.getY() == jj){
+                                        if(chp.getPlayer() == player && chp.getType() == PieceType.PAWN){
                                             isHavePawn = true;
                                             break;
                                         }
@@ -392,24 +392,24 @@ public class ChessGUI{
     }
 
     private void depromote(ChessPiece chp){
-        switch(chp.type){
+        switch(chp.getType()){
             case SILVERGEN_P:
-                chp.type = PieceType.SILVERGEN;
+                chp.setType(PieceType.SILVERGEN);
                 break;
             case KNIGHT_P:
-                chp.type = PieceType.KNIGHT;
+                chp.setType(PieceType.KNIGHT);
                 break;
             case LANCE_P:
-                chp.type = PieceType.LANCE;
+                chp.setType(PieceType.LANCE);
                 break;
             case PAWN_P:
-                chp.type = PieceType.PAWN;
+                chp.setType(PieceType.PAWN);
                 break;
             case ROOK_P:
-                chp.type = PieceType.ROOK;
+                chp.setType(PieceType.ROOK);
                 break;
             case BISHOP_P:
-                chp.type = PieceType.BISHOP;
+                chp.setType(PieceType.BISHOP);
                 break;
         }
     }
@@ -421,7 +421,7 @@ public class ChessGUI{
 
         p1CapturedPieces.add(chp);
 
-        switch(chp.type){
+        switch(chp.getType()){
             case KNIGHT:
                 p1CapturedSquares[0].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[0].getText())+1));
                 break;
@@ -455,7 +455,7 @@ public class ChessGUI{
 
         p2CapturedPieces.add(chp);
 
-        switch(chp.type){
+        switch(chp.getType()){
             case KNIGHT:
                 p2CapturedSquares[6].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[6].getText())+1));
                 break;
@@ -486,8 +486,8 @@ public class ChessGUI{
     //Get Each Piece Possible Moves
     public ArrayList<Point> getPossibleMoves(ChessPiece chp){
         ArrayList<Point> possibleMoves = new ArrayList<Point>();
-        int pf = (chp.player == PLAYER_TWO) ? 1 : -1;
-        switch(chp.type){
+        int pf = (chp.getPlayer() == PLAYER_TWO) ? 1 : -1;
+        switch(chp.getType()){
             case KING:
                 possibleMoves.add(new Point(-1,1));
                 possibleMoves.add(new Point(0,1));
@@ -501,37 +501,37 @@ public class ChessGUI{
             case ROOK:
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(r,0));
-                    if(isOccupied(chp.x + pf*r,chp.y)!=0) break;
+                    if(isOccupied(chp.getX() + pf*r,chp.getY())!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(-r,0));
-                    if(isOccupied(chp.x - pf*r,chp.y)!=0) break;
+                    if(isOccupied(chp.getX() - pf*r,chp.getY())!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(0,r));
-                    if(isOccupied(chp.x,chp.y + pf*r)!=0) break;
+                    if(isOccupied(chp.getX(),chp.getY() + pf*r)!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(0,-r));
-                    if(isOccupied(chp.x,chp.y - pf*r)!=0) break;
+                    if(isOccupied(chp.getX(),chp.getY() - pf*r)!=0) break;
                 }
                 break;
             case BISHOP:
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(r,r));
-                    if(isOccupied(chp.x + pf*r,chp.y + pf*r)!=0) break;
+                    if(isOccupied(chp.getX() + pf*r,chp.getY() + pf*r)!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(-r,-r));
-                    if(isOccupied(chp.x - pf*r,chp.y - pf*r)!=0) break;
+                    if(isOccupied(chp.getX() - pf*r,chp.getY() - pf*r)!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(-r,r));
-                    if(isOccupied(chp.x - pf*r,chp.y + pf*r)!=0) break;
+                    if(isOccupied(chp.getX() - pf*r,chp.getY() + pf*r)!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(r,-r));
-                    if(isOccupied(chp.x + pf*r,chp.y - pf*r)!=0) break;
+                    if(isOccupied(chp.getX() + pf*r,chp.getY() - pf*r)!=0) break;
                 }
                 break;
             case GOLDGEN:
@@ -560,7 +560,7 @@ public class ChessGUI{
             case LANCE:
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(0,r));
-                    if(isOccupied(chp.x,chp.y + pf*r)!=0) break;
+                    if(isOccupied(chp.getX(),chp.getY() + pf*r)!=0) break;
                 }
                 break;
             case PAWN:
@@ -569,19 +569,19 @@ public class ChessGUI{
             case ROOK_P:
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(r,0));
-                    if(isOccupied(chp.x + pf*r,chp.y)!=0) break;
+                    if(isOccupied(chp.getX() + pf*r,chp.getY())!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(-r,0));
-                    if(isOccupied(chp.x - pf*r,chp.y)!=0) break;
+                    if(isOccupied(chp.getX() - pf*r,chp.getY())!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(0,r));
-                    if(isOccupied(chp.x,chp.y + pf*r)!=0) break;
+                    if(isOccupied(chp.getX(),chp.getY() + pf*r)!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(0,-r));
-                    if(isOccupied(chp.x,chp.y - pf*r)!=0) break;
+                    if(isOccupied(chp.getX(),chp.getY() - pf*r)!=0) break;
                 }
                 possibleMoves.add(new Point(1,1));
                 possibleMoves.add(new Point(1,-1));
@@ -591,19 +591,19 @@ public class ChessGUI{
             case BISHOP_P:
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(r,r));
-                    if(isOccupied(chp.x + pf*r,chp.y + pf*r)!=0) break;
+                    if(isOccupied(chp.getX() + pf*r,chp.getY() + pf*r)!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(-r,-r));
-                    if(isOccupied(chp.x - pf*r,chp.y - pf*r)!=0) break;
+                    if(isOccupied(chp.getX() - pf*r,chp.getY() - pf*r)!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(-r,r));
-                    if(isOccupied(chp.x - pf*r,chp.y + pf*r)!=0) break;
+                    if(isOccupied(chp.getX() - pf*r,chp.getY() + pf*r)!=0) break;
                 }
                 for(int r=1;r<9;r++){
                     possibleMoves.add(new Point(r,-r));
-                    if(isOccupied(chp.x + pf*r,chp.y - pf*r)!=0) break;
+                    if(isOccupied(chp.getX() + pf*r,chp.getY() - pf*r)!=0) break;
                 }
                 possibleMoves.add(new Point(0,1));
                 possibleMoves.add(new Point(0,-1));
@@ -618,8 +618,8 @@ public class ChessGUI{
     // 0 1 2
     public int isOccupied(int x, int y) {
         for(ChessPiece chp : chessPieces){
-            if(chp.x == x && chp.y == y){
-                if(chp.player == PLAYER_ONE){
+            if(chp.getX() == x && chp.getY() == y){
+                if(chp.getPlayer() == PLAYER_ONE){
                     return 1;
                 }else{
                     return 2;
@@ -632,7 +632,7 @@ public class ChessGUI{
 
     public ChessPiece getPieceAt(int x, int y) {
         for(ChessPiece chp : chessPieces){
-            if(chp.x == x && chp.y == y){
+            if(chp.getX() == x && chp.getY() == y){
                 return chp;
             }
         }
@@ -640,14 +640,14 @@ public class ChessGUI{
     }
 
     private boolean isPromotable(ChessPiece chp) {
-        if (chp.type == PieceType.LANCE || chp.type == PieceType.PAWN || chp.type == PieceType.SILVERGEN
-                || chp.type == PieceType.KNIGHT || chp.type == PieceType.ROOK || chp.type == PieceType.BISHOP){
-            if (chp.player == PLAYER_ONE) {
-                if (chp.y <= 2) {
+        if (chp.getType() == PieceType.LANCE || chp.getType() == PieceType.PAWN || chp.getType() == PieceType.SILVERGEN
+                || chp.getType() == PieceType.KNIGHT || chp.getType() == PieceType.ROOK || chp.getType() == PieceType.BISHOP){
+            if (chp.getPlayer() == PLAYER_ONE) {
+                if (chp.getY() <= 2) {
                     return true;
                 }
             } else {
-                if (chp.y >= 6) {
+                if (chp.getY() >= 6) {
                     return true;
                 }
             }
@@ -877,94 +877,94 @@ public class ChessGUI{
         }
 
         for(ChessPiece chp : chessPieces){
-            if(chp.player == PLAYER_ONE){
-                switch(chp.type){
+            if(chp.getPlayer() == PLAYER_ONE){
+                switch(chp.getType()){
                     case KING:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(kingImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(kingImage1));
                         break;
                     case ROOK:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(rookImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(rookImage1));
                         break;
                     case BISHOP:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(bishopImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(bishopImage1));
                         break;
                     case GOLDGEN:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(goldImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(goldImage1));
                         break;
                     case SILVERGEN:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(silverImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(silverImage1));
                         break;
                     case KNIGHT:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(knightImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(knightImage1));
                         break;
                     case LANCE:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(lanceImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(lanceImage1));
                         break;
                     case PAWN:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(pawnImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(pawnImage1));
                         break;
                     case ROOK_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(rookPImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(rookPImage1));
                         break;
                     case BISHOP_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(bishopPImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(bishopPImage1));
                         break;
                     case SILVERGEN_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(silverPImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(silverPImage1));
                         break;
                     case KNIGHT_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(knightPImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(knightPImage1));
                         break;
                     case LANCE_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(lancePImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(lancePImage1));
                         break;
                     case PAWN_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(pawnPImage1));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(pawnPImage1));
                         break;
                 }
             }else{
-                switch(chp.type){
+                switch(chp.getType()){
                     case KING:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(kingImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(kingImage2));
                         break;
                     case ROOK:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(rookImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(rookImage2));
                         break;
                     case BISHOP:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(bishopImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(bishopImage2));
                         break;
                     case GOLDGEN:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(goldImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(goldImage2));
                         break;
                     case SILVERGEN:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(silverImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(silverImage2));
                         break;
                     case KNIGHT:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(knightImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(knightImage2));
                         break;
                     case LANCE:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(lanceImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(lanceImage2));
                         break;
                     case PAWN:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(pawnImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(pawnImage2));
                         break;
                     case ROOK_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(rookPImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(rookPImage2));
                         break;
                     case BISHOP_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(bishopPImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(bishopPImage2));
                         break;
                     case SILVERGEN_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(silverPImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(silverPImage2));
                         break;
                     case KNIGHT_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(knightPImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(knightPImage2));
                         break;
                     case LANCE_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(lancePImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(lancePImage2));
                         break;
                     case PAWN_P:
-                        chessBoardSquares[chp.x][chp.y].setIcon(new ImageIcon(pawnPImage2));
+                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(pawnPImage2));
                         break;
                 }
             }

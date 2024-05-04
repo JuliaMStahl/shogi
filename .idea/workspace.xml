@@ -7,50 +7,9 @@
     <bookmark url="file://$PROJECT_DIR$/src/ChessGUI.java" line="682" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b0c0d535-c47c-49a5-b0cd-e7b8073105e6" name="Default" comment="Atividade 5 Refatoração de um Code Smell - Bruna Martins">
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_04_2024_19_35_[Default]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_04_2024_19_35__Default_.xml" afterDir="false" />
+    <list default="true" id="b0c0d535-c47c-49a5-b0cd-e7b8073105e6" name="Default" comment="Atividade 6 Refatorações - Bruna Martins">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/11.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/12.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/13.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/7.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/8.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessAI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessGUI$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessGUI$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessGUI$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessGUI$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessGUI$CapturedPieceButtonActionListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessGUI$ChessButtonActionListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessGUI$PromoteButtonActionListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessPiece$pieceType.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/ChessPiece.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/PieceMove.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/11.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/12.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/13.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/7.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/8.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Shogi/images/9.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ChessAI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChessAI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ChessGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChessGUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ChessPiece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChessPiece.java" afterDir="false" />
     </list>
@@ -488,6 +447,15 @@
       <workItem from="1710704952320" duration="798000" />
       <workItem from="1713742584341" duration="3036000" />
     </task>
+    <task id="LOCAL-00001" summary="Atividade 6 Refatorações - Bruna Martins">
+      <option name="closed" value="true" />
+      <created>1714848350290</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1714848350318</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -576,7 +544,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Atividade 5 Refatoração de um Code Smell - Bruna Martins" />
-    <option name="LAST_COMMIT_MESSAGE" value="Atividade 5 Refatoração de um Code Smell - Bruna Martins" />
+    <MESSAGE value="Atividade 6 Refatorações - Bruna Martins" />
+    <option name="LAST_COMMIT_MESSAGE" value="Atividade 6 Refatorações - Bruna Martins" />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
