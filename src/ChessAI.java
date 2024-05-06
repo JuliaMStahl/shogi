@@ -20,24 +20,24 @@ public class ChessAI {
         //for(ChessPiece chp : parent.chessPieces) {
         for(int chpi=0;chpi<parent.chessPieces.size();chpi++){
             ChessPiece chp = parent.chessPieces.get(chpi);
-            if(chp.player == AIplayerNo) {
+            if(chp.getPlayer() == AIplayerNo) {
                 for (Point move : parent.getPossibleMoves(chp)){
                     int pf = (AIplayerNo == 2) ? 1 : -1;
-                    int newx = (chp.x + move.x * pf);
-                    int newy = (chp.y + move.y * pf);
+                    int newx = (chp.getX() + move.x * pf);
+                    int newy = (chp.getY() + move.y * pf);
 
                     if (newx >= 0 && newy >= 0 && newx <= 8 && newy <= 8) {
                         if (parent.isOccupied(newx, newy) == 0) {
                             PieceMove m = new PieceMove(chpi,new Point(newx,newy));
                             m.isGoingToCapture =false;
                             moves.add(m);
-                            System.out.println("MOVE  [x=" + chp.x + ",y=" + chp.y +"] to {x=" + newx + ",y=" + newy + "]");
+                            System.out.println("MOVE  [x=" + chp.getX() + ",y=" + chp.getY() +"] to {x=" + newx + ",y=" + newy + "]");
                         } else if (parent.isOccupied(newx, newy) != AIplayerNo) {
                             PieceMove m = new PieceMove(chpi,new Point(newx,newy));
                             m.isGoingToCapture = true;
                             m.CapturingPiece = parent.getPieceAt(newx,newy);
                             moves.add(m);
-                            System.out.println("CAPTURE  [x=" + chp.x + ",y=" + chp.y +"] to {x=" + newx + ",y=" + newy + "]");
+                            System.out.println("CAPTURE  [x=" + chp.getX() + ",y=" + chp.getY() +"] to {x=" + newx + ",y=" + newy + "]");
                         }
                     }
                 }
