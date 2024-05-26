@@ -787,35 +787,35 @@ public class ChessGUI{
     //Load Piece Images from Resource
     private final void loadImages() {
         try{
-            kingImage1 =  ImageIO.read(this.getClass().getResource("0.png"));
-            rookImage1 =  ImageIO.read(this.getClass().getResource("1.png"));
-            bishopImage1 =  ImageIO.read(this.getClass().getResource("2.png"));
-            goldImage1 =  ImageIO.read(this.getClass().getResource("3.png"));
-            silverImage1 =  ImageIO.read(this.getClass().getResource("4.png"));
-            knightImage1 =  ImageIO.read(this.getClass().getResource("5.png"));
-            lanceImage1 =  ImageIO.read(this.getClass().getResource("6.png"));
-            pawnImage1 =  ImageIO.read(this.getClass().getResource("7.png"));
-            rookPImage1 =  ImageIO.read(this.getClass().getResource("8.png"));
-            bishopPImage1 =  ImageIO.read(this.getClass().getResource("9.png"));
-            silverPImage1 =  ImageIO.read(this.getClass().getResource("10.png"));
-            knightPImage1 =  ImageIO.read(this.getClass().getResource("11.png"));
-            lancePImage1 =  ImageIO.read(this.getClass().getResource("12.png"));
-            pawnPImage1 =  ImageIO.read(this.getClass().getResource("13.png"));
+            kingImage1 = ImageIO.read(this.getClass().getResource("0.png"));
+        rookImage1 = ImageIO.read(this.getClass().getResource("1.png"));
+        bishopImage1 = ImageIO.read(this.getClass().getResource("2.png"));
+        goldImage1 = ImageIO.read(this.getClass().getResource("3.png"));
+        silverImage1 = ImageIO.read(this.getClass().getResource("4.png"));
+        knightImage1 = ImageIO.read(this.getClass().getResource("5.png"));
+        lanceImage1 = ImageIO.read(this.getClass().getResource("6.png"));
+        pawnImage1 = ImageIO.read(this.getClass().getResource("7.png"));
+        rookPImage1 = ImageIO.read(this.getClass().getResource("8.png"));
+        bishopPImage1 = ImageIO.read(this.getClass().getResource("9.png"));
+        silverPImage1 = ImageIO.read(this.getClass().getResource("10.png"));
+        knightPImage1 = ImageIO.read(this.getClass().getResource("11.png"));
+        lancePImage1 = ImageIO.read(this.getClass().getResource("12.png"));
+        pawnPImage1 = ImageIO.read(this.getClass().getResource("13.png"));
 
-            kingImage2 =  rotate180(kingImage1);
-            rookImage2 =  rotate180(rookImage1);
-            bishopImage2 =  rotate180(bishopImage1);
-            goldImage2 =  rotate180(goldImage1);
-            silverImage2 =  rotate180(silverImage1);
-            knightImage2 =  rotate180(knightImage1);
-            lanceImage2 =  rotate180(lanceImage1);
-            pawnImage2 =  rotate180(pawnImage1);
-            rookPImage2 =  rotate180(rookPImage1);
-            bishopPImage2 =  rotate180(bishopPImage1);
-            silverPImage2 =  rotate180(silverPImage1);
-            knightPImage2 =  rotate180(knightPImage1);
-            lancePImage2 =  rotate180(lancePImage1);
-            pawnPImage2 =  rotate180(pawnPImage1);
+        kingImage2 = rotate180(ImageIO.read(this.getClass().getResource("0_2.png")));
+        rookImage2 = rotate180(ImageIO.read(this.getClass().getResource("1_2.png")));
+        bishopImage2 = rotate180(ImageIO.read(this.getClass().getResource("2_2.png")));
+        goldImage2 = rotate180(ImageIO.read(this.getClass().getResource("3_2.png")));
+        silverImage2 = rotate180(ImageIO.read(this.getClass().getResource("4_2.png")));
+        knightImage2 = rotate180(ImageIO.read(this.getClass().getResource("5_2.png")));
+        lanceImage2 = rotate180(ImageIO.read(this.getClass().getResource("6_2.png")));
+        pawnImage2 = rotate180(ImageIO.read(this.getClass().getResource("7_2.png")));
+        rookPImage2 = rotate180(ImageIO.read(this.getClass().getResource("8_2.png")));
+        bishopPImage2 = rotate180(ImageIO.read(this.getClass().getResource("9_2.png")));
+        silverPImage2 = rotate180(ImageIO.read(this.getClass().getResource("10_2.png")));
+        knightPImage2 = rotate180(ImageIO.read(this.getClass().getResource("11_2.png")));
+        lancePImage2 = rotate180(ImageIO.read(this.getClass().getResource("12_2.png")));
+        pawnPImage2 = rotate180(ImageIO.read(this.getClass().getResource("13_2.png")));
             
         } catch (Exception e) {
             e.printStackTrace();
