@@ -63,6 +63,9 @@ public class ChessGUI{
     private JPanel chessBoard;
 
     private int turn = 1;
+    private int player1MoveCount = 0;
+    private int player2MoveCount = 0;
+    private String modoDeJogo = "Não definido";
 
     private Color mainbg = new Color(230,230,230);
     private Color ochre = new Color(204,119,34);
@@ -137,8 +140,10 @@ public class ChessGUI{
                 //redrawBoard();
                 isHandled = true;
                 if (turn == 1) {
+                    player1MoveCount++;
                     turn = 2;
                 } else if (turn == 2) {
+                    player2MoveCount++;
                     turn = 1;
                 }
                 break;
@@ -184,8 +189,10 @@ public class ChessGUI{
                 //redrawBoard();
                 isHandled=true;
                 if (turn == 1) {
+                    player1MoveCount++;
                     turn = 2;
                 } else if(turn==2) {
+                    player2MoveCount++;
                     turn = 1;
                 }
                 break;
@@ -289,8 +296,10 @@ public class ChessGUI{
                 chessPieces.get(pm.chessPieceIndex).setY(pm.finalPos.y);
             }
             if (turn == 1) {
+                player1MoveCount++;
                 turn = 2;
             } else if(turn==2) {
+                player2MoveCount++;
                 turn = 1;
             }
             isHandled = true;
@@ -670,18 +679,17 @@ public class ChessGUI{
 
         gui.add(tools, BorderLayout.NORTH);
 
-        // Configuração do JLabel para mostrar a vez do jogador
         turnPlay.setHorizontalAlignment(JLabel.CENTER);
-        turnPlay.setForeground(Color.RED); // Cor do texto definida como vermelha
-        turnPlay.setFont(new Font("Arial", Font.BOLD, 14)); // Definição da fonte, opcional
+        turnPlay.setForeground(Color.RED);
+        turnPlay.setFont(new Font("Arial", Font.BOLD, 14));
 
-        JPanel messagePanel = new JPanel(new BorderLayout()); // Criando um novo JPanel para centralizar a mensagem
-        messagePanel.add(turnPlay, BorderLayout.CENTER); // Adicionando o JLabel ao centro do JPanel
-        tools.add(messagePanel); // Adicionando o JPanel ao JToolBar
+        JPanel messagePanel = new JPanel(new BorderLayout());
+        messagePanel.add(turnPlay, BorderLayout.CENTER);
+        tools.add(messagePanel);
 
         gui.setBackground(ochre);
-        tools.add(createGameAction("New Game (2 Player)", false));
-        tools.add(createGameAction("New Game (with AI)", true));
+        tools.add(createGameAction("Novo Jogo (2 Jogadores)", false));
+        tools.add(createGameAction("Novo Jogo (Contra IA)", true));
         gui.add(tools, BorderLayout.NORTH);
     }
 
@@ -826,6 +834,8 @@ public class ChessGUI{
     //Initializes chess board piece places
     private final void setupNewGame(boolean isWithAI) {
 
+        player1MoveCount = 0;
+        player2MoveCount = 0;
         isPlayingWithAI = isWithAI;
         if(isWithAI) cpuAI = new ChessAI(this);
 
@@ -887,12 +897,18 @@ public class ChessGUI{
             }
         }
 
+        if (isPlayingWithAI == true){
+            modoDeJogo = "Player VS IA";
+        }else{
+            modoDeJogo = "Player VS Player";
+        }
+
         if (turn == 1) {
-            turnPlay.setText("Turn: Player 1");
+            turnPlay.setText("Turno: Jogador 1. Total de jogadas: " + player1MoveCount + " | Modo de jogo: " + modoDeJogo);
         } else if (turn == 2) {
-            turnPlay.setText("Turn: Player 2");
+            turnPlay.setText("Turno: Jogador 2. Total de jogadas: " + player2MoveCount + " | Modo de jogo: " + modoDeJogo);
         } else if (turn == 3) {
-            turnPlay.setText("Game Over");
+            turnPlay.setText("Fim de jogo");
         }
 
         for(ChessPiece chp : chessPieces){
