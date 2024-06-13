@@ -73,6 +73,7 @@ public class ChessGUI{
     public static final int PLAYER_ONE = 1;
 
     public static final int PLAYER_TWO = 2;
+    private boolean daltonicMode = false;
 
     //Chess Square Buttons ActionListener
     private class ChessButtonActionListener implements ActionListener {
@@ -162,6 +163,7 @@ public class ChessGUI{
                             //p1CapturedPieces.add(chp);
                             if(chp.getType() == PieceType.KING){
                                 JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+                                setupNewGame(isPlayingWithAI);
                                 turn=3;
                             }
                             addP1CapturedPiece(chp);
@@ -175,6 +177,7 @@ public class ChessGUI{
                             //p2CapturedPieces.add(chp);
                             if(chp.getType() == PieceType.KING){
                                 JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+                                setupNewGame(isPlayingWithAI);
                                 turn=3;
                             }
                             addP2CapturedPiece(chp);
@@ -261,6 +264,7 @@ public class ChessGUI{
         if(chessPieces.get(pm.chessPieceIndex).getPlayer() == PLAYER_ONE){
             if(pieceGoingToCapture.getType() == PieceType.KING){
                 JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+                setupNewGame(isPlayingWithAI);
                 turn=3;
             }
             addP1CapturedPiece(pieceGoingToCapture);
@@ -268,6 +272,7 @@ public class ChessGUI{
         }else{
             if(pieceGoingToCapture.getType() == PieceType.KING){
                 JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+                setupNewGame(isPlayingWithAI);
                 turn=3;
             }
             addP2CapturedPiece(pieceGoingToCapture);
@@ -671,6 +676,60 @@ public class ChessGUI{
         setupToolBar();
         setupMainPanel();
         setupChessBoard();
+
+        JButton modoDaltonicoButton = new JButton("Modo Daltonico");
+        modoDaltonicoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleDaltonicMode();
+            }
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(modoDaltonicoButton);
+        gui.add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void toggleDaltonicMode() {
+        daltonicMode = !daltonicMode;
+        Color newColor = daltonicMode ? Color.GRAY : new Color(204, 119, 34);
+        gui.setBackground(newColor);
+        for (Component component : gui.getComponents()) {
+            updateComponentColors(component, newColor);
+        }
+    }
+
+    private void updateComponentColors(Component component, Color newColor) {
+        if (component instanceof JPanel) {
+            JPanel panel = (JPanel) component;
+            panel.setBackground(newColor);
+            for (Component child : panel.getComponents()) {
+                updateComponentColors(child, newColor);
+            }
+        } else if (component instanceof JButton) {
+            JButton button = (JButton) component;
+            if (button.getBackground().equals(new Color(204, 119, 34)) || button.getBackground().equals(Color.GRAY)) {
+                button.setBackground(newColor);
+            }
+        } else {
+            component.setBackground(newColor);
+        }
+    }
+
+    private void resetCapturedPieces() {
+        p1CapturedPieces.clear();
+        p2CapturedPieces.clear();
+
+        resetCapturedSquares();
+    }
+
+    private void resetCapturedSquares() {
+        for (int i = 0; i < p1CapturedSquares.length; i++) {
+            p1CapturedSquares[i].setText("0");
+        }
+        for (int i = 0; i < p2CapturedSquares.length; i++) {
+            p2CapturedSquares[i].setText("0");
+        }
     }
 
     private void setupToolBar() {
@@ -837,6 +896,9 @@ public class ChessGUI{
         player1MoveCount = 0;
         player2MoveCount = 0;
         isPlayingWithAI = isWithAI;
+
+        resetCapturedPieces();
+
         if(isWithAI) cpuAI = new ChessAI(this);
 
         chessPieces = new ArrayList<ChessPiece>();

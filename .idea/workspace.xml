@@ -7,10 +7,7 @@
     <bookmark url="file://$PROJECT_DIR$/src/ChessGUI.java" line="682" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b0c0d535-c47c-49a5-b0cd-e7b8073105e6" name="Default" comment="Melhoria 1 - Bruna Martins">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ChessGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChessGUI.java" afterDir="false" />
-    </list>
+    <list default="true" id="b0c0d535-c47c-49a5-b0cd-e7b8073105e6" name="Default" comment="Entrega melhorias - Alberto Portaluppi" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -231,9 +228,8 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/camilavincensi/Manutenção de software/MS29S---Projeto&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Shogi-master&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -464,7 +460,15 @@
       <option name="project" value="LOCAL" />
       <updated>1716751625824</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Entrega melhorias - Alberto Portaluppi">
+      <option name="closed" value="true" />
+      <created>1716756051074</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1716756051076</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -556,7 +560,8 @@
     <MESSAGE value="Atividade 6 Refatorações - Bruna Martins" />
     <MESSAGE value="Atividade 6 Refatorações - Alberto Portaluppi" />
     <MESSAGE value="Melhoria 1 - Bruna Martins" />
-    <option name="LAST_COMMIT_MESSAGE" value="Melhoria 1 - Bruna Martins" />
+    <MESSAGE value="Entrega melhorias - Alberto Portaluppi" />
+    <option name="LAST_COMMIT_MESSAGE" value="Entrega melhorias - Alberto Portaluppi" />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
