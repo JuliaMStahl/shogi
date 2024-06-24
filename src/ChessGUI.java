@@ -10,21 +10,31 @@ import java.util.ArrayList;
 
 public class ChessGUI{
 
-    private final JPanel gui = new JPanel(new BorderLayout(3, 3));
-    private JButton[][] chessBoardSquares = new JButton[9][9];
+    // Variáveis para contar as peças capturadas para ambos os jogadores
+    private int playerOnePieceCount = 13;
+    private int playerTwoPieceCount = 13;
+    private int playerOneCapturedCount = 0;
+    private int playerTwoCapturedCount = 0;
+    private final JLabel playerOnePieceCountLabel = new JLabel();
+    private final JLabel playerTwoPieceCountLabel = new JLabel();
+    private final JLabel playerOneCapturedCountLabel = new JLabel();
+    private final JLabel playerTwoCapturedCountLabel = new JLabel();
 
-    public ArrayList<ChessPiece> chessPieces = new ArrayList<ChessPiece>();
+    private final JPanel gui = new JPanel(new BorderLayout(3, 3));
+    private final JButton[][] chessBoardSquares = new JButton[9][9];
+
+    public ArrayList<ChessPiece> chessPieces = new ArrayList<>();
     public ChessPiece selectedPiece;
 
     private final JLabel turnPlay = new JLabel();
     public PromotionActions selectedPieceActions;
-    public ArrayList<Point> readyToMoveSquares = new ArrayList<Point>();
-    public ArrayList<Point> readyToCaptureSquares = new ArrayList<Point>();
+    public ArrayList<Point> readyToMoveSquares = new ArrayList<>();
+    public ArrayList<Point> readyToCaptureSquares = new ArrayList<>();
 
-    public ArrayList<ChessPiece> p1CapturedPieces = new ArrayList<ChessPiece>();
-    private JButton[] p1CapturedSquares = new JButton[7];
-    public ArrayList<ChessPiece> p2CapturedPieces = new ArrayList<ChessPiece>();
-    private JButton[] p2CapturedSquares = new JButton[7];
+    public ArrayList<ChessPiece> p1CapturedPieces = new ArrayList<>();
+    private final JButton[] p1CapturedSquares = new JButton[7];
+    public ArrayList<ChessPiece> p2CapturedPieces = new ArrayList<>();
+    private final JButton[] p2CapturedSquares = new JButton[7];
 
     private boolean isPlayingWithAI = false;
 
@@ -67,8 +77,8 @@ public class ChessGUI{
     private int player2MoveCount = 0;
     private String modoDeJogo = "Não definido";
 
-    private Color mainbg = new Color(230,230,230);
-    private Color ochre = new Color(204,119,34);
+    private final Color mainbg = new Color(230,230,230);
+    private final Color ochre = new Color(204,119,34);
 
     public static final int PLAYER_ONE = 1;
 
@@ -77,8 +87,8 @@ public class ChessGUI{
 
     //Chess Square Buttons ActionListener
     private class ChessButtonActionListener implements ActionListener {
-        private int x;
-        private int y;
+        private final int x;
+        private final int y;
 
         public ChessButtonActionListener(int x,int y) {
             this.x = x;
@@ -90,9 +100,43 @@ public class ChessGUI{
         }
     }
 
+
+    private void updatePieceCounts() {
+        playerOnePieceCountLabel.setText("Peças do Jogador 1: " + playerOnePieceCount);
+        if (isPlayingWithAI) {
+            playerTwoPieceCountLabel.setText("Peças do IA Player: " + playerTwoPieceCount);
+            playerTwoCapturedCountLabel.setText("Peças Capturadas pelo IA Player: " + playerTwoCapturedCount);
+        } else {
+            playerTwoPieceCountLabel.setText("Peças do Jogador 2: " + playerTwoPieceCount);
+            playerTwoCapturedCountLabel.setText("Peças Capturadas pelo Jogador 2: " + playerTwoCapturedCount);
+        }
+        playerOneCapturedCountLabel.setText("Peças Capturadas pelo Jogador 1: " + playerOneCapturedCount);
+    }
+
+    // Método para reiniciar o jogo
+    public void resetGame() {
+        playerOnePieceCount = 13;
+        playerTwoPieceCount = 13;
+        playerOneCapturedCount = 0;
+        playerTwoCapturedCount = 0;
+        updatePieceCounts();
+    }
+
+    // Método para capturar peças
+    public void capturePiece(ChessPiece piece) {
+        if (piece.getPlayer() != PLAYER_ONE) {
+            playerOneCapturedCount++;
+            playerTwoPieceCount--;
+        } else {
+            playerTwoCapturedCount++;
+            playerOnePieceCount--;
+        }
+        updatePieceCounts();
+    }
+
     //Promotion Button ActionListener
     private class PromoteButtonActionListener implements ActionListener {
-        private ChessPiece chp;
+        private final ChessPiece chp;
 
         public PromoteButtonActionListener(ChessPiece chp) {
             this.chp = chp;
@@ -168,6 +212,7 @@ public class ChessGUI{
                             }
                             addP1CapturedPiece(chp);
                             chessPieces.remove(chp);
+                            capturePiece(chp);
                             break;
                         }
                     }
@@ -182,6 +227,7 @@ public class ChessGUI{
                             }
                             addP2CapturedPiece(chp);
                             chessPieces.remove(chp);
+                            capturePiece(chp);
                             break;
                         }
                     }
@@ -244,8 +290,6 @@ public class ChessGUI{
                     checkPromotion(chp, x, y);
                     pieceMove(chp);
                 }
-            }else{
-                //chessBoardSquares[x][y].setBackground(new Color(230,230,230));
             }
         }
     }
@@ -269,6 +313,7 @@ public class ChessGUI{
             }
             addP1CapturedPiece(pieceGoingToCapture);
             chessPieces.remove(pieceGoingToCapture);
+            capturePiece(pieceGoingToCapture);
         }else{
             if(pieceGoingToCapture.getType() == PieceType.KING){
                 JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
@@ -277,6 +322,7 @@ public class ChessGUI{
             }
             addP2CapturedPiece(pieceGoingToCapture);
             chessPieces.remove(pieceGoingToCapture);
+            capturePiece(pieceGoingToCapture);
         }
 
     }
@@ -323,8 +369,8 @@ public class ChessGUI{
 
 
         selectedPiece = null;
-        readyToMoveSquares = new ArrayList<Point>();
-        readyToCaptureSquares = new ArrayList<Point>();
+        readyToMoveSquares = new ArrayList<>();
+        readyToCaptureSquares = new ArrayList<>();
 
         redrawBoard();
 
@@ -335,9 +381,9 @@ public class ChessGUI{
     }
 
     private class CapturedPieceButtonActionListener implements ActionListener {
-        private PieceType pieceKind;
-        private int player;
-        private int butIndex;
+        private final PieceType pieceKind;
+        private final int player;
+        private final int butIndex;
 
         public CapturedPieceButtonActionListener(int player,PieceType pieceKind,int butIndex) {
             this.player = player;
@@ -359,8 +405,8 @@ public class ChessGUI{
                     selectedPieceActions.mustAddbutIndex = butIndex;
                     selectedPieceActions.mustAddplayer = player;
                     selectedPiece = droppingPiece;
-                    readyToMoveSquares = new ArrayList<Point>();
-                    readyToCaptureSquares = new ArrayList<Point>();
+                    readyToMoveSquares = new ArrayList<>();
+                    readyToCaptureSquares = new ArrayList<>();
 
                     redrawBoard();
                     if (pieceKind != PieceType.PAWN) {
@@ -497,7 +543,7 @@ public class ChessGUI{
     //TODO Add other pieces moves
     //Get Each Piece Possible Moves
     public ArrayList<Point> getPossibleMoves(ChessPiece chp){
-        ArrayList<Point> possibleMoves = new ArrayList<Point>();
+        ArrayList<Point> possibleMoves = new ArrayList<>();
         int pf = (chp.getPlayer() == PLAYER_TWO) ? 1 : -1;
         switch(chp.getType()){
             case KING:
@@ -678,12 +724,30 @@ public class ChessGUI{
         setupChessBoard();
 
         JButton modoDaltonicoButton = new JButton("Modo Daltonico");
-        modoDaltonicoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toggleDaltonicMode();
-            }
-        });
+        modoDaltonicoButton.addActionListener(e -> toggleDaltonicMode());
+
+        // Criar painéis para cada jogador
+        JPanel playerOnePanel = new JPanel(new GridLayout(2, 1));
+        playerOnePanel.setBorder(BorderFactory.createTitledBorder("Jogador 1"));
+        playerOnePanel.add(playerOnePieceCountLabel);
+        playerOnePanel.add(playerOneCapturedCountLabel);
+
+        JPanel playerTwoPanel = new JPanel(new GridLayout(2, 1));
+        playerTwoPanel.setBorder(BorderFactory.createTitledBorder("Jogador 2 / IA"));
+        playerTwoPanel.add(playerTwoPieceCountLabel);
+        playerTwoPanel.add(playerTwoCapturedCountLabel);
+
+        // Criar um painel principal com GridLayout
+        JPanel mainInfoPanel = new JPanel(new GridLayout(1, 2));
+        mainInfoPanel.add(playerOnePanel);
+        mainInfoPanel.add(playerTwoPanel);
+
+        gui.add(mainInfoPanel, BorderLayout.PAGE_END);
+
+        resetGame(); // Reiniciar contadores na inicialização do jogo
+
+
+        updatePieceCounts(); // Atualizar na inicialização
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(modoDaltonicoButton);
@@ -852,7 +916,7 @@ public class ChessGUI{
     }
 
     //Load Piece Images from Resource
-    private final void loadImages() {
+    private void loadImages() {
         try{
             kingImage1 = ImageIO.read(this.getClass().getResource("0.png"));
         rookImage1 = ImageIO.read(this.getClass().getResource("1.png"));
@@ -891,7 +955,7 @@ public class ChessGUI{
     }
 
     //Initializes chess board piece places
-    private final void setupNewGame(boolean isWithAI) {
+    private void setupNewGame(boolean isWithAI) {
 
         player1MoveCount = 0;
         player2MoveCount = 0;
@@ -901,7 +965,7 @@ public class ChessGUI{
 
         if(isWithAI) cpuAI = new ChessAI(this);
 
-        chessPieces = new ArrayList<ChessPiece>();
+        chessPieces = new ArrayList<>();
 
         chessPieces.add(new ChessPiece(1, PieceType.LANCE,0,8));
         chessPieces.add(new ChessPiece(1, PieceType.KNIGHT,1,8));
@@ -959,7 +1023,9 @@ public class ChessGUI{
             }
         }
 
-        if (isPlayingWithAI == true){
+        updatePieceCounts();
+
+        if (isPlayingWithAI){
             modoDeJogo = "Player VS IA";
         }else{
             modoDeJogo = "Player VS Player";
@@ -1070,27 +1136,23 @@ public class ChessGUI{
 
 
     public static void main(String[] args) {
-        Runnable r = new Runnable() {
+        Runnable r = () -> {
+            ChessGUI cg = new ChessGUI();
 
-            @Override
-            public void run() {
-                ChessGUI cg = new ChessGUI();
+            JFrame f = new JFrame("Shogi v0.9");
+            f.add(cg.getGui());
+            // Ensures JVM closes after frame(s) closed and
+            // all non-daemon threads are finished
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            // See http://stackoverflow.com/a/7143398/418556 for demo.
+            f.setLocationByPlatform(true);
 
-                JFrame f = new JFrame("Shogi v0.9");
-                f.add(cg.getGui());
-                // Ensures JVM closes after frame(s) closed and
-                // all non-daemon threads are finished
-                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                // See http://stackoverflow.com/a/7143398/418556 for demo.
-                f.setLocationByPlatform(true);
-
-                // ensures the frame is the minimum size it needs to be
-                // in order display the components within it
-                f.pack();
-                // ensures the minimum size is enforced.
-                f.setMinimumSize(f.getSize());
-                f.setVisible(true);
-            }
+            // ensures the frame is the minimum size it needs to be
+            // in order display the components within it
+            f.pack();
+            // ensures the minimum size is enforced.
+            f.setMinimumSize(f.getSize());
+            f.setVisible(true);
         };
         // Swing GUIs should be created and updated on the EDT
         // http://docs.oracle.com/javase/tutorial/uiswing/concurrency
