@@ -1037,6 +1037,7 @@ public class ChessGUI{
             turnPlay.setText("Turno: Jogador 2. Total de jogadas: " + player2MoveCount + " | Modo de jogo: " + modoDeJogo);
         } else if (turn == 3) {
             turnPlay.setText("Fim de jogo");
+            resetGame();
         }
 
         for(ChessPiece chp : chessPieces){
