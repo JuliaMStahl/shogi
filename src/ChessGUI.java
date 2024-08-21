@@ -100,7 +100,7 @@ public class ChessGUI{
         }
     }
 
-
+    // Atualiza labels de peças dos jogadores
     private void updatePieceCounts() {
         playerOnePieceCountLabel.setText("Peças do Jogador 1: " + playerOnePieceCount);
         if (isPlayingWithAI) {
