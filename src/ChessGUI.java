@@ -813,6 +813,21 @@ public class ChessGUI{
         gui.setBackground(ochre);
         tools.add(createGameAction("Novo Jogo (2 Jogadores)", false));
         tools.add(createGameAction("Novo Jogo (Contra IA)", true));
+
+        JButton instructionsButton = new JButton("Instruções");
+        instructionsButton.addActionListener(e -> {
+            String instructions = "Instruções do Jogo Shogi:\n\n"
+                    + "1. O Shogi é um jogo de tabuleiro japonês similar ao xadrez.\n"
+                    + "2. O objetivo do jogo é capturar o rei do oponente.\n"
+                    + "3. Cada jogador controla um exército de 20 peças, com diferentes movimentos.\n"
+                    + "4. Uma característica única do Shogi é a 'promoção', onde certas peças ganham novos movimentos ao avançar no tabuleiro.\n"
+                    + "5. Outra característica única é a 'gota', onde peças capturadas podem ser reaproveitadas no tabuleiro como parte do seu exército.\n"
+                    + "6. O jogo termina quando um dos reis é capturado ou um jogador se rende.\n"
+                    + "7. Utilize as opções do menu para iniciar um novo jogo para 2 jogadores ou para jogar contra a IA.";
+            JOptionPane.showMessageDialog(gui, instructions, "Instruções do Jogo Shogi", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        tools.add(instructionsButton);
         gui.add(tools, BorderLayout.NORTH);
     }
 
