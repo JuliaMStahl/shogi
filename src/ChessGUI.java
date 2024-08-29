@@ -91,11 +91,11 @@ public class ChessGUI {
     private int secondsPlayer1 = 0, secondsPlayer2 = 0; //cronometo
     private JLabel timerLabel1, timerLabel2; // cronometro
 
-    AtomicInteger totalTimePlayer1 = new AtomicInteger(900);
-    AtomicInteger totalTimePlayer2 = new AtomicInteger(900);
-
 
     private void initializeTimers() {
+
+        AtomicInteger totalTimePlayer1 = new AtomicInteger(900);
+        AtomicInteger totalTimePlayer2 = new AtomicInteger(900);
 
         timerLabel1 = new JLabel("Jogador 1: 15:00");
         timerLabel2 = new JLabel("Jogador 2: 15:00");
@@ -124,11 +124,7 @@ public class ChessGUI {
             }
         });
     }
-
-    private void decrementTime(int jogador, AtomicInteger totalTimePlayer) {
-
-    }
-
+    
     //Chess Square Buttons ActionListener
     private class ChessButtonActionListener implements ActionListener {
         private final int x;
@@ -1083,8 +1079,8 @@ public class ChessGUI {
         //cronometro
         secondsPlayer1 = 0;
         secondsPlayer2 = 0;
-        timerLabel1.setText("Jogador 1: 00:00");
-        timerLabel2.setText("Jogador 2: 00:00");
+        timerLabel1.setText("Jogador 1: 15:00");
+        timerLabel2.setText("Jogador 2: 15:00");
         timer1.stop();
         timer2.stop();
 
@@ -1120,8 +1116,12 @@ public class ChessGUI {
         }
 
         if (turn == 1) {
+            timer2.stop();
+            timer1.start();
             turnPlay.setText("Turno: Jogador 1. Total de jogadas: " + player1MoveCount + " | Modo de jogo: " + modoDeJogo);
         } else if (turn == 2) {
+            timer1.stop();
+            timer2.start();
             turnPlay.setText("Turno: Jogador 2. Total de jogadas: " + player2MoveCount + " | Modo de jogo: " + modoDeJogo);
         } else if (turn == 3) {
             turnPlay.setText("Fim de jogo");
