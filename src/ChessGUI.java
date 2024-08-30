@@ -88,7 +88,6 @@ public class ChessGUI {
     private boolean daltonicMode = false;
 
     private Timer timer1, timer2; //cronometro
-    private int secondsPlayer1 = 0, secondsPlayer2 = 0; //cronometo
     private JLabel timerLabel1, timerLabel2; // cronometro
 
     AtomicInteger totalTimePlayer1 = new AtomicInteger(900);
@@ -175,8 +174,6 @@ public class ChessGUI {
         timerLabel1.setText("Jogador 1: 15:00");
         timerLabel2.setText("Jogador 2: 15:00");
 
-        secondsPlayer1 = 0;
-        secondsPlayer2 = 0;
         timer1.start();
 
     }
