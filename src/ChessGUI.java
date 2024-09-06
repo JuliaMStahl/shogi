@@ -7,8 +7,10 @@ import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.swing.Timer;
 
-public class ChessGUI{
+public class ChessGUI {
 
     // Variáveis para contar as peças capturadas para ambos os jogadores
     private int playerOnePieceCount = 13;
@@ -77,26 +79,62 @@ public class ChessGUI{
     private int player2MoveCount = 0;
     private String modoDeJogo = "Não definido";
 
-    private final Color mainbg = new Color(230,230,230);
-    private final Color ochre = new Color(204,119,34);
+    private final Color mainbg = new Color(230, 230, 230);
+    private final Color ochre = new Color(204, 119, 34);
 
     public static final int PLAYER_ONE = 1;
 
     public static final int PLAYER_TWO = 2;
     private boolean daltonicMode = false;
 
+    private Timer timer1, timer2; //cronometro
+    private JLabel timerLabel1, timerLabel2; // cronometro
+
+    AtomicInteger totalTimePlayer1 = new AtomicInteger(900);
+    AtomicInteger totalTimePlayer2 = new AtomicInteger(900);
+
+    private void initializeTimers() {
+
+        timerLabel1 = new JLabel("Jogador 1: 15:00");
+        timerLabel2 = new JLabel("Jogador 2: 15:00");
+
+        timer1 = new Timer(1000, e -> {
+            totalTimePlayer1.getAndDecrement();
+            int minutes = totalTimePlayer1.get() / 60;
+            int seconds = totalTimePlayer1.get() % 60;
+            timerLabel1.setText(String.format("Jogador 1: %02d:%02d", minutes, seconds));
+
+            if (totalTimePlayer1.get() <= 0) {
+                ((Timer) e.getSource()).stop();
+                timerLabel1.setText("Jogador 1: 00:00");
+            }
+        });
+
+        timer2 = new Timer(1000, e -> {
+            totalTimePlayer2.getAndDecrement();
+            int minutes = totalTimePlayer2.get() / 60;
+            int seconds = totalTimePlayer2.get() % 60;
+            timerLabel2.setText(String.format("Jogador 2: %02d:%02d", minutes, seconds));
+
+            if (totalTimePlayer2.get() <= 0) {
+                ((Timer) e.getSource()).stop();
+                timerLabel2.setText("Jogador 2: 00:00");
+            }
+        });
+    }
+
     //Chess Square Buttons ActionListener
     private class ChessButtonActionListener implements ActionListener {
         private final int x;
         private final int y;
 
-        public ChessButtonActionListener(int x,int y) {
+        public ChessButtonActionListener(int x, int y) {
             this.x = x;
             this.y = y;
         }
 
         public void actionPerformed(ActionEvent e) {
-            handleButtonPress(x,y);
+            handleButtonPress(x, y);
         }
     }
 
@@ -120,6 +158,24 @@ public class ChessGUI{
         playerOneCapturedCount = 0;
         playerTwoCapturedCount = 0;
         updatePieceCounts();
+
+    }
+
+    public void resetTime(){
+        if (timer1.isRunning()) {
+            timer1.stop();
+        }
+        if (timer2.isRunning()) {
+            timer2.stop();
+        }
+        totalTimePlayer1.set(900);
+        totalTimePlayer2.set(900);
+
+        timerLabel1.setText("Jogador 1: 15:00");
+        timerLabel2.setText("Jogador 2: 15:00");
+
+        timer1.start();
+
     }
 
     // Método para capturar peças
@@ -143,7 +199,7 @@ public class ChessGUI{
         }
 
         public void actionPerformed(ActionEvent e) {
-            switch(chp.getType()){
+            switch (chp.getType()) {
                 case SILVERGEN:
                     chp.setType(PieceType.SILVERGEN_P);
                     break;
@@ -165,7 +221,8 @@ public class ChessGUI{
             redrawBoard();
         }
     }
-    public boolean handlePieceMove (int x, int y) {
+
+    public boolean handlePieceMove(int x, int y) {
         boolean isHandled = false;
         for (Point rtm : readyToMoveSquares) {
             if (rtm.x == x && rtm.y == y) {
@@ -197,18 +254,18 @@ public class ChessGUI{
         return isHandled;
     }
 
-    public boolean handlePieceCapture (int x, int y) {
+    public boolean handlePieceCapture(int x, int y) {
         boolean isHandled = false;
-        for(Point rtm : readyToCaptureSquares){
-            if(rtm.x == x && rtm.y == y) {
-                if(selectedPiece.getPlayer() == PLAYER_ONE){
-                    for(ChessPiece chp : chessPieces) {
+        for (Point rtm : readyToCaptureSquares) {
+            if (rtm.x == x && rtm.y == y) {
+                if (selectedPiece.getPlayer() == PLAYER_ONE) {
+                    for (ChessPiece chp : chessPieces) {
                         if (chp.getX() == rtm.x && chp.getY() == rtm.y) {
                             //p1CapturedPieces.add(chp);
-                            if(chp.getType() == PieceType.KING){
-                                JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+                            if (chp.getType() == PieceType.KING) {
+                                JOptionPane.showMessageDialog(null, "Player 1 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
                                 setupNewGame(isPlayingWithAI);
-                                turn=3;
+                                turn = 3;
                             }
                             addP1CapturedPiece(chp);
                             chessPieces.remove(chp);
@@ -216,14 +273,14 @@ public class ChessGUI{
                             break;
                         }
                     }
-                }else{
-                    for(ChessPiece chp : chessPieces) {
+                } else {
+                    for (ChessPiece chp : chessPieces) {
                         if (chp.getX() == rtm.x && chp.getY() == rtm.y) {
                             //p2CapturedPieces.add(chp);
-                            if(chp.getType() == PieceType.KING){
-                                JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+                            if (chp.getType() == PieceType.KING) {
+                                JOptionPane.showMessageDialog(null, "Player 2 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
                                 setupNewGame(isPlayingWithAI);
-                                turn=3;
+                                turn = 3;
                             }
                             addP2CapturedPiece(chp);
                             chessPieces.remove(chp);
@@ -236,11 +293,11 @@ public class ChessGUI{
                 selectedPiece.setX(rtm.x);
                 selectedPiece.setY(rtm.y);
                 //redrawBoard();
-                isHandled=true;
+                isHandled = true;
                 if (turn == 1) {
                     player1MoveCount++;
                     turn = 2;
-                } else if(turn==2) {
+                } else if (turn == 2) {
                     player2MoveCount++;
                     turn = 1;
                 }
@@ -251,7 +308,7 @@ public class ChessGUI{
         return isHandled;
     }
 
-    private void checkPromotion (ChessPiece chp, int x, int y) {
+    private void checkPromotion(ChessPiece chp, int x, int y) {
         if (isPromotable(chp)) {
             JPopupMenu popup = new JPopupMenu();
             JMenuItem promoteButton = new JMenuItem("Promote !");
@@ -263,7 +320,7 @@ public class ChessGUI{
         }
     }
 
-    private void pieceMove (ChessPiece chp) {
+    private void pieceMove(ChessPiece chp) {
         for (Point move : getPossibleMoves(chp)) {
             int pf = (chp.getPlayer() == PLAYER_TWO) ? 1 : -1;
             int newx = (chp.getX() + move.x * pf);
@@ -280,9 +337,10 @@ public class ChessGUI{
             }
         }
     }
+
     public void handlePieceSelect(int x, int y) {
-        for(ChessPiece chp : chessPieces){
-            if(chp.getX() == x && chp.getY() == y) {
+        for (ChessPiece chp : chessPieces) {
+            if (chp.getX() == x && chp.getY() == y) {
                 //Select the Piece
                 if (turn == chp.getPlayer()) {
                     selectedPiece = chp;
@@ -294,7 +352,7 @@ public class ChessGUI{
         }
     }
 
-    private PieceMove iAPlays () {
+    private PieceMove iAPlays() {
 
         PieceMove pm = cpuAI.playMove();
         System.out.println("AI Moving " + pm.chessPieceIndex + " to " + pm.finalPos.toString());
@@ -303,22 +361,22 @@ public class ChessGUI{
 
     }
 
-    private void showWinner (PieceMove pm, ChessPiece pieceGoingToCapture ) {
+    private void showWinner(PieceMove pm, ChessPiece pieceGoingToCapture) {
 
-        if(chessPieces.get(pm.chessPieceIndex).getPlayer() == PLAYER_ONE){
-            if(pieceGoingToCapture.getType() == PieceType.KING){
-                JOptionPane.showMessageDialog(null,"Player 1 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+        if (chessPieces.get(pm.chessPieceIndex).getPlayer() == PLAYER_ONE) {
+            if (pieceGoingToCapture.getType() == PieceType.KING) {
+                JOptionPane.showMessageDialog(null, "Player 1 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
                 setupNewGame(isPlayingWithAI);
-                turn=3;
+                turn = 3;
             }
             addP1CapturedPiece(pieceGoingToCapture);
             chessPieces.remove(pieceGoingToCapture);
             capturePiece(pieceGoingToCapture);
-        }else{
-            if(pieceGoingToCapture.getType() == PieceType.KING){
-                JOptionPane.showMessageDialog(null,"Player 2 Wins !","Game Over",JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            if (pieceGoingToCapture.getType() == PieceType.KING) {
+                JOptionPane.showMessageDialog(null, "Player 2 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
                 setupNewGame(isPlayingWithAI);
-                turn=3;
+                turn = 3;
             }
             addP2CapturedPiece(pieceGoingToCapture);
             chessPieces.remove(pieceGoingToCapture);
@@ -331,14 +389,14 @@ public class ChessGUI{
 
         boolean isHandled = false;
 
-        if(turn==2 && isPlayingWithAI){
+        if (turn == 2 && isPlayingWithAI) {
             PieceMove pm = iAPlays();
 
-            if(!pm.isGoingToCapture){
+            if (!pm.isGoingToCapture) {
                 chessPieces.get(pm.chessPieceIndex).setX(pm.finalPos.x);
                 chessPieces.get(pm.chessPieceIndex).setY(pm.finalPos.y);
-            }else{
-                ChessPiece pieceGoingToCapture = getPieceAt(pm.finalPos.x,pm.finalPos.y);
+            } else {
+                ChessPiece pieceGoingToCapture = getPieceAt(pm.finalPos.x, pm.finalPos.y);
 
                 showWinner(pm, pieceGoingToCapture);
 
@@ -349,7 +407,7 @@ public class ChessGUI{
             if (turn == 1) {
                 player1MoveCount++;
                 turn = 2;
-            } else if(turn==2) {
+            } else if (turn == 2) {
                 player2MoveCount++;
                 turn = 1;
             }
@@ -357,7 +415,8 @@ public class ChessGUI{
         }
         return isHandled;
     }
-    public void handleButtonPress(int x,int y){
+
+    public void handleButtonPress(int x, int y) {
 
         boolean isHandled;
 
@@ -365,7 +424,7 @@ public class ChessGUI{
 
         handlePieceCapture(x, y);
 
-       isHandled = playGame();
+        isHandled = playGame();
 
 
         selectedPiece = null;
@@ -374,7 +433,15 @@ public class ChessGUI{
 
         redrawBoard();
 
-        if(isHandled){
+        if (isHandled) {
+            //muda pra contar tempo  do outro jogador
+            if (turn == 1) {
+                timer2.stop();
+                timer1.start();
+            } else if (turn == 2) {
+                timer1.stop();
+                timer2.start();
+            }
             return;
         }
         handlePieceSelect(x, y);
@@ -385,7 +452,7 @@ public class ChessGUI{
         private final int player;
         private final int butIndex;
 
-        public CapturedPieceButtonActionListener(int player,PieceType pieceKind,int butIndex) {
+        public CapturedPieceButtonActionListener(int player, PieceType pieceKind, int butIndex) {
             this.player = player;
             this.pieceKind = pieceKind;
             this.butIndex = butIndex;
@@ -419,21 +486,21 @@ public class ChessGUI{
                                 }
                             }
                         }
-                    }else{
-                        for(int ii=0;ii<9;ii++){
+                    } else {
+                        for (int ii = 0; ii < 9; ii++) {
                             boolean isHavePawn = false;
-                            for(int jj=0;jj<9;jj++){
+                            for (int jj = 0; jj < 9; jj++) {
                                 //check for pawn
-                                for(ChessPiece chp : chessPieces){
-                                    if(chp.getX() == ii && chp.getY() == jj){
-                                        if(chp.getPlayer() == player && chp.getType() == PieceType.PAWN){
+                                for (ChessPiece chp : chessPieces) {
+                                    if (chp.getX() == ii && chp.getY() == jj) {
+                                        if (chp.getPlayer() == player && chp.getType() == PieceType.PAWN) {
                                             isHavePawn = true;
                                             break;
                                         }
                                     }
                                 }
                             }
-                            if(!isHavePawn){
+                            if (!isHavePawn) {
                                 for (int jj = 0; jj < 9; jj++) {
                                     if (isOccupied(ii, jj) == 0) {
                                         //Select the Piece
@@ -449,8 +516,8 @@ public class ChessGUI{
         }
     }
 
-    private void depromote(ChessPiece chp){
-        switch(chp.getType()){
+    private void depromote(ChessPiece chp) {
+        switch (chp.getType()) {
             case SILVERGEN_P:
                 chp.setType(PieceType.SILVERGEN);
                 break;
@@ -472,68 +539,68 @@ public class ChessGUI{
         }
     }
 
-    private void addP1CapturedPiece(ChessPiece chp){
+    private void addP1CapturedPiece(ChessPiece chp) {
 
         //Depromote
         depromote(chp);
 
         p1CapturedPieces.add(chp);
 
-        switch(chp.getType()){
+        switch (chp.getType()) {
             case KNIGHT:
-                p1CapturedSquares[0].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[0].getText())+1));
+                p1CapturedSquares[0].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[0].getText()) + 1));
                 break;
             case BISHOP:
-                p1CapturedSquares[1].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[1].getText())+1));
+                p1CapturedSquares[1].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[1].getText()) + 1));
                 break;
             case ROOK:
-                p1CapturedSquares[2].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[2].getText())+1));
+                p1CapturedSquares[2].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[2].getText()) + 1));
                 break;
             case GOLDGEN:
-                p1CapturedSquares[3].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[3].getText())+1));
+                p1CapturedSquares[3].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[3].getText()) + 1));
                 break;
             case SILVERGEN:
-                p1CapturedSquares[4].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[4].getText())+1));
+                p1CapturedSquares[4].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[4].getText()) + 1));
                 break;
             case PAWN:
-                p1CapturedSquares[5].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[5].getText())+1));
+                p1CapturedSquares[5].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[5].getText()) + 1));
                 break;
             case LANCE:
-                p1CapturedSquares[6].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[6].getText())+1));
+                p1CapturedSquares[6].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[6].getText()) + 1));
                 break;
         }
 
         redrawBoard();
     }
 
-    private void addP2CapturedPiece(ChessPiece chp){
+    private void addP2CapturedPiece(ChessPiece chp) {
 
         //Depromote
         depromote(chp);
 
         p2CapturedPieces.add(chp);
 
-        switch(chp.getType()){
+        switch (chp.getType()) {
             case KNIGHT:
-                p2CapturedSquares[6].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[6].getText())+1));
+                p2CapturedSquares[6].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[6].getText()) + 1));
                 break;
             case BISHOP:
-                p2CapturedSquares[4].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[4].getText())+1));
+                p2CapturedSquares[4].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[4].getText()) + 1));
                 break;
             case ROOK:
-                p2CapturedSquares[5].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[5].getText())+1));
+                p2CapturedSquares[5].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[5].getText()) + 1));
                 break;
             case GOLDGEN:
-                p2CapturedSquares[2].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[2].getText())+1));
+                p2CapturedSquares[2].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[2].getText()) + 1));
                 break;
             case SILVERGEN:
-                p2CapturedSquares[3].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[3].getText())+1));
+                p2CapturedSquares[3].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[3].getText()) + 1));
                 break;
             case PAWN:
-                p2CapturedSquares[0].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[0].getText())+1));
+                p2CapturedSquares[0].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[0].getText()) + 1));
                 break;
             case LANCE:
-                p2CapturedSquares[1].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[1].getText())+1));
+                p2CapturedSquares[1].setText(Integer.toString(Integer.parseInt(p2CapturedSquares[1].getText()) + 1));
                 break;
         }
 
@@ -542,54 +609,54 @@ public class ChessGUI{
 
     //TODO Add other pieces moves
     //Get Each Piece Possible Moves
-    public ArrayList<Point> getPossibleMoves(ChessPiece chp){
+    public ArrayList<Point> getPossibleMoves(ChessPiece chp) {
         ArrayList<Point> possibleMoves = new ArrayList<>();
         int pf = (chp.getPlayer() == PLAYER_TWO) ? 1 : -1;
-        switch(chp.getType()){
+        switch (chp.getType()) {
             case KING:
-                possibleMoves.add(new Point(-1,1));
-                possibleMoves.add(new Point(0,1));
-                possibleMoves.add(new Point(1,1));
-                possibleMoves.add(new Point(-1,0));
-                possibleMoves.add(new Point(1,0));
-                possibleMoves.add(new Point(-1,-1));
-                possibleMoves.add(new Point(0,-1));
-                possibleMoves.add(new Point(1,-1));
+                possibleMoves.add(new Point(-1, 1));
+                possibleMoves.add(new Point(0, 1));
+                possibleMoves.add(new Point(1, 1));
+                possibleMoves.add(new Point(-1, 0));
+                possibleMoves.add(new Point(1, 0));
+                possibleMoves.add(new Point(-1, -1));
+                possibleMoves.add(new Point(0, -1));
+                possibleMoves.add(new Point(1, -1));
                 break;
             case ROOK:
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(r,0));
-                    if(isOccupied(chp.getX() + pf*r,chp.getY())!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(r, 0));
+                    if (isOccupied(chp.getX() + pf * r, chp.getY()) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(-r,0));
-                    if(isOccupied(chp.getX() - pf*r,chp.getY())!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(-r, 0));
+                    if (isOccupied(chp.getX() - pf * r, chp.getY()) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(0,r));
-                    if(isOccupied(chp.getX(),chp.getY() + pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(0, r));
+                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(0,-r));
-                    if(isOccupied(chp.getX(),chp.getY() - pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(0, -r));
+                    if (isOccupied(chp.getX(), chp.getY() - pf * r) != 0) break;
                 }
                 break;
             case BISHOP:
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(r,r));
-                    if(isOccupied(chp.getX() + pf*r,chp.getY() + pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(r, r));
+                    if (isOccupied(chp.getX() + pf * r, chp.getY() + pf * r) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(-r,-r));
-                    if(isOccupied(chp.getX() - pf*r,chp.getY() - pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(-r, -r));
+                    if (isOccupied(chp.getX() - pf * r, chp.getY() - pf * r) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(-r,r));
-                    if(isOccupied(chp.getX() - pf*r,chp.getY() + pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(-r, r));
+                    if (isOccupied(chp.getX() - pf * r, chp.getY() + pf * r) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(r,-r));
-                    if(isOccupied(chp.getX() + pf*r,chp.getY() - pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(r, -r));
+                    if (isOccupied(chp.getX() + pf * r, chp.getY() - pf * r) != 0) break;
                 }
                 break;
             case GOLDGEN:
@@ -597,76 +664,76 @@ public class ChessGUI{
             case KNIGHT_P:
             case LANCE_P:
             case PAWN_P:
-                possibleMoves.add(new Point(-1,1));
-                possibleMoves.add(new Point(0,1));
-                possibleMoves.add(new Point(1,1));
-                possibleMoves.add(new Point(-1,0));
-                possibleMoves.add(new Point(1,0));
-                possibleMoves.add(new Point(0,-1));
+                possibleMoves.add(new Point(-1, 1));
+                possibleMoves.add(new Point(0, 1));
+                possibleMoves.add(new Point(1, 1));
+                possibleMoves.add(new Point(-1, 0));
+                possibleMoves.add(new Point(1, 0));
+                possibleMoves.add(new Point(0, -1));
                 break;
             case SILVERGEN:
-                possibleMoves.add(new Point(-1,1));
-                possibleMoves.add(new Point(0,1));
-                possibleMoves.add(new Point(1,1));
-                possibleMoves.add(new Point(-1,-1));
-                possibleMoves.add(new Point(1,-1));
+                possibleMoves.add(new Point(-1, 1));
+                possibleMoves.add(new Point(0, 1));
+                possibleMoves.add(new Point(1, 1));
+                possibleMoves.add(new Point(-1, -1));
+                possibleMoves.add(new Point(1, -1));
                 break;
             case KNIGHT:
-                possibleMoves.add(new Point(-1,2));
-                possibleMoves.add(new Point(1,2));
+                possibleMoves.add(new Point(-1, 2));
+                possibleMoves.add(new Point(1, 2));
                 break;
             case LANCE:
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(0,r));
-                    if(isOccupied(chp.getX(),chp.getY() + pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(0, r));
+                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0) break;
                 }
                 break;
             case PAWN:
-                possibleMoves.add(new Point(0,1));
+                possibleMoves.add(new Point(0, 1));
                 break;
             case ROOK_P:
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(r,0));
-                    if(isOccupied(chp.getX() + pf*r,chp.getY())!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(r, 0));
+                    if (isOccupied(chp.getX() + pf * r, chp.getY()) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(-r,0));
-                    if(isOccupied(chp.getX() - pf*r,chp.getY())!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(-r, 0));
+                    if (isOccupied(chp.getX() - pf * r, chp.getY()) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(0,r));
-                    if(isOccupied(chp.getX(),chp.getY() + pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(0, r));
+                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(0,-r));
-                    if(isOccupied(chp.getX(),chp.getY() - pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(0, -r));
+                    if (isOccupied(chp.getX(), chp.getY() - pf * r) != 0) break;
                 }
-                possibleMoves.add(new Point(1,1));
-                possibleMoves.add(new Point(1,-1));
-                possibleMoves.add(new Point(-1,1));
-                possibleMoves.add(new Point(-1,-1));
+                possibleMoves.add(new Point(1, 1));
+                possibleMoves.add(new Point(1, -1));
+                possibleMoves.add(new Point(-1, 1));
+                possibleMoves.add(new Point(-1, -1));
                 break;
             case BISHOP_P:
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(r,r));
-                    if(isOccupied(chp.getX() + pf*r,chp.getY() + pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(r, r));
+                    if (isOccupied(chp.getX() + pf * r, chp.getY() + pf * r) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(-r,-r));
-                    if(isOccupied(chp.getX() - pf*r,chp.getY() - pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(-r, -r));
+                    if (isOccupied(chp.getX() - pf * r, chp.getY() - pf * r) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(-r,r));
-                    if(isOccupied(chp.getX() - pf*r,chp.getY() + pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(-r, r));
+                    if (isOccupied(chp.getX() - pf * r, chp.getY() + pf * r) != 0) break;
                 }
-                for(int r=1;r<9;r++){
-                    possibleMoves.add(new Point(r,-r));
-                    if(isOccupied(chp.getX() + pf*r,chp.getY() - pf*r)!=0) break;
+                for (int r = 1; r < 9; r++) {
+                    possibleMoves.add(new Point(r, -r));
+                    if (isOccupied(chp.getX() + pf * r, chp.getY() - pf * r) != 0) break;
                 }
-                possibleMoves.add(new Point(0,1));
-                possibleMoves.add(new Point(0,-1));
-                possibleMoves.add(new Point(-1,0));
-                possibleMoves.add(new Point(1,0));
+                possibleMoves.add(new Point(0, 1));
+                possibleMoves.add(new Point(0, -1));
+                possibleMoves.add(new Point(-1, 0));
+                possibleMoves.add(new Point(1, 0));
                 break;
 
         }
@@ -675,11 +742,11 @@ public class ChessGUI{
 
     // 0 1 2
     public int isOccupied(int x, int y) {
-        for(ChessPiece chp : chessPieces){
-            if(chp.getX() == x && chp.getY() == y){
-                if(chp.getPlayer() == PLAYER_ONE){
+        for (ChessPiece chp : chessPieces) {
+            if (chp.getX() == x && chp.getY() == y) {
+                if (chp.getPlayer() == PLAYER_ONE) {
                     return 1;
-                }else{
+                } else {
                     return 2;
                 }
             }
@@ -689,8 +756,8 @@ public class ChessGUI{
 
 
     public ChessPiece getPieceAt(int x, int y) {
-        for(ChessPiece chp : chessPieces){
-            if(chp.getX() == x && chp.getY() == y){
+        for (ChessPiece chp : chessPieces) {
+            if (chp.getX() == x && chp.getY() == y) {
                 return chp;
             }
         }
@@ -699,7 +766,7 @@ public class ChessGUI{
 
     private boolean isPromotable(ChessPiece chp) {
         if (chp.getType() == PieceType.LANCE || chp.getType() == PieceType.PAWN || chp.getType() == PieceType.SILVERGEN
-                || chp.getType() == PieceType.KNIGHT || chp.getType() == PieceType.ROOK || chp.getType() == PieceType.BISHOP){
+                || chp.getType() == PieceType.KNIGHT || chp.getType() == PieceType.ROOK || chp.getType() == PieceType.BISHOP) {
             if (chp.getPlayer() == PLAYER_ONE) {
                 if (chp.getY() <= 2) {
                     return true;
@@ -719,9 +786,11 @@ public class ChessGUI{
 
     public final void initializeGui() {
         loadImages();
+        initializeTimers(); //inicializa cronometro
         setupToolBar();
         setupMainPanel();
         setupChessBoard();
+
 
         JButton modoDaltonicoButton = new JButton("Modo Daltonico");
         modoDaltonicoButton.addActionListener(e -> toggleDaltonicMode());
@@ -810,6 +879,11 @@ public class ChessGUI{
         messagePanel.add(turnPlay, BorderLayout.CENTER);
         tools.add(messagePanel);
 
+        JPanel timerPanel = new JPanel(new GridLayout(1, 2));
+        timerPanel.add(timerLabel1);
+        timerPanel.add(timerLabel2);
+        messagePanel.add(timerPanel, BorderLayout.SOUTH);
+
         gui.setBackground(ochre);
         tools.add(createGameAction("Novo Jogo (2 Jogadores)", false));
         tools.add(createGameAction("Novo Jogo (Contra IA)", true));
@@ -856,7 +930,7 @@ public class ChessGUI{
         panel.setBackground(ochre);
         JButton[] capturedSquares = playerNumber == PLAYER_ONE ? p1CapturedSquares : p2CapturedSquares;
         ImageIcon[] images = playerNumber == PLAYER_ONE ?
-                new ImageIcon[] {
+                new ImageIcon[]{
                         new ImageIcon(knightImage1),
                         new ImageIcon(bishopImage1),
                         new ImageIcon(rookImage1),
@@ -865,7 +939,7 @@ public class ChessGUI{
                         new ImageIcon(pawnImage1),
                         new ImageIcon(lanceImage1)
                 } :
-                new ImageIcon[] {
+                new ImageIcon[]{
                         new ImageIcon(pawnImage2),
                         new ImageIcon(lanceImage2),
                         new ImageIcon(goldImage2),
@@ -932,37 +1006,37 @@ public class ChessGUI{
 
     //Load Piece Images from Resource
     private void loadImages() {
-        try{
+        try {
             kingImage1 = ImageIO.read(this.getClass().getResource("0.png"));
-        rookImage1 = ImageIO.read(this.getClass().getResource("1.png"));
-        bishopImage1 = ImageIO.read(this.getClass().getResource("2.png"));
-        goldImage1 = ImageIO.read(this.getClass().getResource("3.png"));
-        silverImage1 = ImageIO.read(this.getClass().getResource("4.png"));
-        knightImage1 = ImageIO.read(this.getClass().getResource("5.png"));
-        lanceImage1 = ImageIO.read(this.getClass().getResource("6.png"));
-        pawnImage1 = ImageIO.read(this.getClass().getResource("7.png"));
-        rookPImage1 = ImageIO.read(this.getClass().getResource("8.png"));
-        bishopPImage1 = ImageIO.read(this.getClass().getResource("9.png"));
-        silverPImage1 = ImageIO.read(this.getClass().getResource("10.png"));
-        knightPImage1 = ImageIO.read(this.getClass().getResource("11.png"));
-        lancePImage1 = ImageIO.read(this.getClass().getResource("12.png"));
-        pawnPImage1 = ImageIO.read(this.getClass().getResource("13.png"));
+            rookImage1 = ImageIO.read(this.getClass().getResource("1.png"));
+            bishopImage1 = ImageIO.read(this.getClass().getResource("2.png"));
+            goldImage1 = ImageIO.read(this.getClass().getResource("3.png"));
+            silverImage1 = ImageIO.read(this.getClass().getResource("4.png"));
+            knightImage1 = ImageIO.read(this.getClass().getResource("5.png"));
+            lanceImage1 = ImageIO.read(this.getClass().getResource("6.png"));
+            pawnImage1 = ImageIO.read(this.getClass().getResource("7.png"));
+            rookPImage1 = ImageIO.read(this.getClass().getResource("8.png"));
+            bishopPImage1 = ImageIO.read(this.getClass().getResource("9.png"));
+            silverPImage1 = ImageIO.read(this.getClass().getResource("10.png"));
+            knightPImage1 = ImageIO.read(this.getClass().getResource("11.png"));
+            lancePImage1 = ImageIO.read(this.getClass().getResource("12.png"));
+            pawnPImage1 = ImageIO.read(this.getClass().getResource("13.png"));
 
-        kingImage2 = rotate180(ImageIO.read(this.getClass().getResource("0_2.png")));
-        rookImage2 = rotate180(ImageIO.read(this.getClass().getResource("1_2.png")));
-        bishopImage2 = rotate180(ImageIO.read(this.getClass().getResource("2_2.png")));
-        goldImage2 = rotate180(ImageIO.read(this.getClass().getResource("3_2.png")));
-        silverImage2 = rotate180(ImageIO.read(this.getClass().getResource("4_2.png")));
-        knightImage2 = rotate180(ImageIO.read(this.getClass().getResource("5_2.png")));
-        lanceImage2 = rotate180(ImageIO.read(this.getClass().getResource("6_2.png")));
-        pawnImage2 = rotate180(ImageIO.read(this.getClass().getResource("7_2.png")));
-        rookPImage2 = rotate180(ImageIO.read(this.getClass().getResource("8_2.png")));
-        bishopPImage2 = rotate180(ImageIO.read(this.getClass().getResource("9_2.png")));
-        silverPImage2 = rotate180(ImageIO.read(this.getClass().getResource("10_2.png")));
-        knightPImage2 = rotate180(ImageIO.read(this.getClass().getResource("11_2.png")));
-        lancePImage2 = rotate180(ImageIO.read(this.getClass().getResource("12_2.png")));
-        pawnPImage2 = rotate180(ImageIO.read(this.getClass().getResource("13_2.png")));
-            
+            kingImage2 = rotate180(ImageIO.read(this.getClass().getResource("0_2.png")));
+            rookImage2 = rotate180(ImageIO.read(this.getClass().getResource("1_2.png")));
+            bishopImage2 = rotate180(ImageIO.read(this.getClass().getResource("2_2.png")));
+            goldImage2 = rotate180(ImageIO.read(this.getClass().getResource("3_2.png")));
+            silverImage2 = rotate180(ImageIO.read(this.getClass().getResource("4_2.png")));
+            knightImage2 = rotate180(ImageIO.read(this.getClass().getResource("5_2.png")));
+            lanceImage2 = rotate180(ImageIO.read(this.getClass().getResource("6_2.png")));
+            pawnImage2 = rotate180(ImageIO.read(this.getClass().getResource("7_2.png")));
+            rookPImage2 = rotate180(ImageIO.read(this.getClass().getResource("8_2.png")));
+            bishopPImage2 = rotate180(ImageIO.read(this.getClass().getResource("9_2.png")));
+            silverPImage2 = rotate180(ImageIO.read(this.getClass().getResource("10_2.png")));
+            knightPImage2 = rotate180(ImageIO.read(this.getClass().getResource("11_2.png")));
+            lancePImage2 = rotate180(ImageIO.read(this.getClass().getResource("12_2.png")));
+            pawnPImage2 = rotate180(ImageIO.read(this.getClass().getResource("13_2.png")));
+
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -978,45 +1052,48 @@ public class ChessGUI{
 
         resetCapturedPieces();
 
-        if(isWithAI) cpuAI = new ChessAI(this);
+        if (isWithAI) cpuAI = new ChessAI(this);
 
         chessPieces = new ArrayList<>();
 
-        chessPieces.add(new ChessPiece(1, PieceType.LANCE,0,8));
-        chessPieces.add(new ChessPiece(1, PieceType.KNIGHT,1,8));
-        chessPieces.add(new ChessPiece(1, PieceType.SILVERGEN,2,8));
-        chessPieces.add(new ChessPiece(1, PieceType.GOLDGEN,3,8));
-        chessPieces.add(new ChessPiece(1, PieceType.KING,4,8));
-        chessPieces.add(new ChessPiece(1, PieceType.GOLDGEN,5,8));
-        chessPieces.add(new ChessPiece(1, PieceType.SILVERGEN,6,8));
-        chessPieces.add(new ChessPiece(1, PieceType.KNIGHT,7,8));
-        chessPieces.add(new ChessPiece(1, PieceType.LANCE,8,8));
+        chessPieces.add(new ChessPiece(1, PieceType.LANCE, 0, 8));
+        chessPieces.add(new ChessPiece(1, PieceType.KNIGHT, 1, 8));
+        chessPieces.add(new ChessPiece(1, PieceType.SILVERGEN, 2, 8));
+        chessPieces.add(new ChessPiece(1, PieceType.GOLDGEN, 3, 8));
+        chessPieces.add(new ChessPiece(1, PieceType.KING, 4, 8));
+        chessPieces.add(new ChessPiece(1, PieceType.GOLDGEN, 5, 8));
+        chessPieces.add(new ChessPiece(1, PieceType.SILVERGEN, 6, 8));
+        chessPieces.add(new ChessPiece(1, PieceType.KNIGHT, 7, 8));
+        chessPieces.add(new ChessPiece(1, PieceType.LANCE, 8, 8));
 
-        chessPieces.add(new ChessPiece(1, PieceType.BISHOP,1,7));
-        chessPieces.add(new ChessPiece(1, PieceType.ROOK,7,7));
-        
-        for(int pawni=0;pawni<9;pawni++){
-            chessPieces.add(new ChessPiece(1, PieceType.PAWN,pawni,6));
+        chessPieces.add(new ChessPiece(1, PieceType.BISHOP, 1, 7));
+        chessPieces.add(new ChessPiece(1, PieceType.ROOK, 7, 7));
+
+        for (int pawni = 0; pawni < 9; pawni++) {
+            chessPieces.add(new ChessPiece(1, PieceType.PAWN, pawni, 6));
         }
 
-        chessPieces.add(new ChessPiece(2, PieceType.LANCE,0,0));
-        chessPieces.add(new ChessPiece(2, PieceType.KNIGHT,1,0));
-        chessPieces.add(new ChessPiece(2, PieceType.SILVERGEN,2,0));
-        chessPieces.add(new ChessPiece(2, PieceType.GOLDGEN,3,0));
-        chessPieces.add(new ChessPiece(2, PieceType.KING,4,0));
-        chessPieces.add(new ChessPiece(2, PieceType.GOLDGEN,5,0));
-        chessPieces.add(new ChessPiece(2, PieceType.SILVERGEN,6,0));
-        chessPieces.add(new ChessPiece(2, PieceType.KNIGHT,7,0));
-        chessPieces.add(new ChessPiece(2, PieceType.LANCE,8,0));
+        chessPieces.add(new ChessPiece(2, PieceType.LANCE, 0, 0));
+        chessPieces.add(new ChessPiece(2, PieceType.KNIGHT, 1, 0));
+        chessPieces.add(new ChessPiece(2, PieceType.SILVERGEN, 2, 0));
+        chessPieces.add(new ChessPiece(2, PieceType.GOLDGEN, 3, 0));
+        chessPieces.add(new ChessPiece(2, PieceType.KING, 4, 0));
+        chessPieces.add(new ChessPiece(2, PieceType.GOLDGEN, 5, 0));
+        chessPieces.add(new ChessPiece(2, PieceType.SILVERGEN, 6, 0));
+        chessPieces.add(new ChessPiece(2, PieceType.KNIGHT, 7, 0));
+        chessPieces.add(new ChessPiece(2, PieceType.LANCE, 8, 0));
 
-        chessPieces.add(new ChessPiece(2, PieceType.ROOK,1,1));
-        chessPieces.add(new ChessPiece(2, PieceType.BISHOP,7,1));
+        chessPieces.add(new ChessPiece(2, PieceType.ROOK, 1, 1));
+        chessPieces.add(new ChessPiece(2, PieceType.BISHOP, 7, 1));
 
-        for(int pawni=0;pawni<9;pawni++){
-            chessPieces.add(new ChessPiece(2, PieceType.PAWN,pawni,2));
+        for (int pawni = 0; pawni < 9; pawni++) {
+            chessPieces.add(new ChessPiece(2, PieceType.PAWN, pawni, 2));
         }
 
         turn = 1;
+
+        // resetar cronometro
+        resetTime();
 
         redrawBoard();
     }
@@ -1024,14 +1101,14 @@ public class ChessGUI{
     public BufferedImage rotate180(BufferedImage bi) {
         AffineTransform tx = new AffineTransform();
         tx.rotate(Math.PI, bi.getWidth() / 2, bi.getHeight() / 2);
-        AffineTransformOp op = new AffineTransformOp(tx,AffineTransformOp.TYPE_BILINEAR);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
         return op.filter(bi, null);
     }
 
-    public void redrawBoard(){
+    public void redrawBoard() {
         //Clear Previous State
-        for(int ii=0;ii<9;ii++){
-            for(int jj=0;jj<9;jj++){
+        for (int ii = 0; ii < 9; ii++) {
+            for (int jj = 0; jj < 9; jj++) {
                 chessBoardSquares[ii][jj].setIcon(new ImageIcon(new BufferedImage(70, 80, BufferedImage.TYPE_INT_ARGB)));
                 chessBoardSquares[ii][jj].setBackground(mainbg);
                 //chessBoardSquares[ii][jj].setComponentPopupMenu(null);
@@ -1040,24 +1117,28 @@ public class ChessGUI{
 
         updatePieceCounts();
 
-        if (isPlayingWithAI){
+        if (isPlayingWithAI) {
             modoDeJogo = "Player VS IA";
-        }else{
+        } else {
             modoDeJogo = "Player VS Player";
         }
 
         if (turn == 1) {
+            timer2.stop();
+            timer1.start();
             turnPlay.setText("Turno: Jogador 1. Total de jogadas: " + player1MoveCount + " | Modo de jogo: " + modoDeJogo);
         } else if (turn == 2) {
+            timer1.stop();
+            timer2.start();
             turnPlay.setText("Turno: Jogador 2. Total de jogadas: " + player2MoveCount + " | Modo de jogo: " + modoDeJogo);
         } else if (turn == 3) {
             turnPlay.setText("Fim de jogo");
             resetGame();
         }
 
-        for(ChessPiece chp : chessPieces){
-            if(chp.getPlayer() == PLAYER_ONE){
-                switch(chp.getType()){
+        for (ChessPiece chp : chessPieces) {
+            if (chp.getPlayer() == PLAYER_ONE) {
+                switch (chp.getType()) {
                     case KING:
                         chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(kingImage1));
                         break;
@@ -1101,8 +1182,8 @@ public class ChessGUI{
                         chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(pawnPImage1));
                         break;
                 }
-            }else{
-                switch(chp.getType()){
+            } else {
+                switch (chp.getType()) {
                     case KING:
                         chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(kingImage2));
                         break;
