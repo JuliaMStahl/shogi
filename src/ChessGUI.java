@@ -13,10 +13,8 @@ import javax.swing.Timer;
 public class ChessGUI {
 
     // Variáveis para contar as peças capturadas para ambos os jogadores
-    private int playerOnePieceCount = 13;
-    private int playerTwoPieceCount = 13;
-    private int playerOneCapturedCount = 0;
-    private int playerTwoCapturedCount = 0;
+    private Player playerOne = new Player(1);
+    private Player playerTwo = new Player(2);
     private final JLabel playerOnePieceCountLabel = new JLabel();
     private final JLabel playerTwoPieceCountLabel = new JLabel();
     private final JLabel playerOneCapturedCountLabel = new JLabel();
@@ -32,10 +30,7 @@ public class ChessGUI {
     public PromotionActions selectedPieceActions;
     public ArrayList<Point> readyToMoveSquares = new ArrayList<>();
     public ArrayList<Point> readyToCaptureSquares = new ArrayList<>();
-
-    public ArrayList<ChessPiece> p1CapturedPieces = new ArrayList<>();
     private final JButton[] p1CapturedSquares = new JButton[7];
-    public ArrayList<ChessPiece> p2CapturedPieces = new ArrayList<>();
     private final JButton[] p2CapturedSquares = new JButton[7];
 
     private boolean isPlayingWithAI = false;
@@ -75,8 +70,6 @@ public class ChessGUI {
     private JPanel chessBoard;
 
     private int turn = 1;
-    private int player1MoveCount = 0;
-    private int player2MoveCount = 0;
     private String modoDeJogo = "Não definido";
 
     private final Color mainbg = new Color(230, 230, 230);
@@ -90,33 +83,30 @@ public class ChessGUI {
     private Timer timer1, timer2; //cronometro
     private JLabel timerLabel1, timerLabel2; // cronometro
 
-    AtomicInteger totalTimePlayer1 = new AtomicInteger(900);
-    AtomicInteger totalTimePlayer2 = new AtomicInteger(900);
-
     private void initializeTimers() {
 
         timerLabel1 = new JLabel("Jogador 1: 15:00");
         timerLabel2 = new JLabel("Jogador 2: 15:00");
 
         timer1 = new Timer(1000, e -> {
-            totalTimePlayer1.getAndDecrement();
-            int minutes = totalTimePlayer1.get() / 60;
-            int seconds = totalTimePlayer1.get() % 60;
+            playerOne.getTotalTime().getAndDecrement();
+            int minutes = playerOne.getTotalTime().get() / 60;
+            int seconds = playerOne.getTotalTime().get() % 60;
             timerLabel1.setText(String.format("Jogador 1: %02d:%02d", minutes, seconds));
 
-            if (totalTimePlayer1.get() <= 0) {
+            if (playerOne.getTotalTime().get() <= 0) {
                 ((Timer) e.getSource()).stop();
                 timerLabel1.setText("Jogador 1: 00:00");
             }
         });
 
         timer2 = new Timer(1000, e -> {
-            totalTimePlayer2.getAndDecrement();
-            int minutes = totalTimePlayer2.get() / 60;
-            int seconds = totalTimePlayer2.get() % 60;
+            playerTwo.getTotalTime().getAndDecrement();
+            int minutes = playerTwo.getTotalTime().get() / 60;
+            int seconds = playerTwo.getTotalTime().get() % 60;
             timerLabel2.setText(String.format("Jogador 2: %02d:%02d", minutes, seconds));
 
-            if (totalTimePlayer2.get() <= 0) {
+            if (playerTwo.getTotalTime().get() <= 0) {
                 ((Timer) e.getSource()).stop();
                 timerLabel2.setText("Jogador 2: 00:00");
             }
@@ -140,25 +130,22 @@ public class ChessGUI {
 
     // Atualiza labels de peças dos jogadores
     private void updatePieceCounts() {
-        playerOnePieceCountLabel.setText("Peças do Jogador 1: " + playerOnePieceCount);
+        playerOnePieceCountLabel.setText("Peças do Jogador 1: " + playerOne.getPieceCount());
         if (isPlayingWithAI) {
-            playerTwoPieceCountLabel.setText("Peças do IA Player: " + playerTwoPieceCount);
-            playerTwoCapturedCountLabel.setText("Peças Capturadas pelo IA Player: " + playerTwoCapturedCount);
+            playerTwoPieceCountLabel.setText("Peças do IA Player: " + playerTwo.getPieceCount());
+            playerTwoCapturedCountLabel.setText("Peças Capturadas pelo IA Player: " + playerTwo.getCapturedCount());
         } else {
-            playerTwoPieceCountLabel.setText("Peças do Jogador 2: " + playerTwoPieceCount);
-            playerTwoCapturedCountLabel.setText("Peças Capturadas pelo Jogador 2: " + playerTwoCapturedCount);
+            playerTwoPieceCountLabel.setText("Peças do Jogador 2: " + playerTwo.getPieceCount());
+            playerTwoCapturedCountLabel.setText("Peças Capturadas pelo Jogador 2: " + playerTwo.getCapturedCount());
         }
-        playerOneCapturedCountLabel.setText("Peças Capturadas pelo Jogador 1: " + playerOneCapturedCount);
+        playerOneCapturedCountLabel.setText("Peças Capturadas pelo Jogador 1: " + playerOne.getCapturedCount());
     }
 
     // Método para reiniciar o jogo
     public void resetGame() {
-        playerOnePieceCount = 13;
-        playerTwoPieceCount = 13;
-        playerOneCapturedCount = 0;
-        playerTwoCapturedCount = 0;
+        playerOne = new Player(1);
+        playerTwo = new Player(2);
         updatePieceCounts();
-
     }
 
     public void resetTime(){
@@ -168,8 +155,8 @@ public class ChessGUI {
         if (timer2.isRunning()) {
             timer2.stop();
         }
-        totalTimePlayer1.set(900);
-        totalTimePlayer2.set(900);
+        playerOne.getTotalTime().set(900);
+        playerTwo.getTotalTime().set(900);
 
         timerLabel1.setText("Jogador 1: 15:00");
         timerLabel2.setText("Jogador 2: 15:00");
@@ -181,11 +168,11 @@ public class ChessGUI {
     // Método para capturar peças
     public void capturePiece(ChessPiece piece) {
         if (piece.getPlayer() != PLAYER_ONE) {
-            playerOneCapturedCount++;
-            playerTwoPieceCount--;
+            playerOne.setCapturedCount(playerOne.getCapturedCount() + 1);
+            playerTwo.setPieceCount(playerTwo.getPieceCount() -1);
         } else {
-            playerTwoCapturedCount++;
-            playerOnePieceCount--;
+            playerTwo.setCapturedCount(playerTwo.getCapturedCount() + 1);
+            playerOne.setPieceCount(playerOne.getPieceCount() - 1);
         }
         updatePieceCounts();
     }
@@ -242,10 +229,10 @@ public class ChessGUI {
                 //redrawBoard();
                 isHandled = true;
                 if (turn == 1) {
-                    player1MoveCount++;
+                    playerOne.setMoveCount(playerOne.getMoveCount() + 1);
                     turn = 2;
                 } else if (turn == 2) {
-                    player2MoveCount++;
+                    playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
                     turn = 1;
                 }
                 break;
@@ -295,10 +282,10 @@ public class ChessGUI {
                 //redrawBoard();
                 isHandled = true;
                 if (turn == 1) {
-                    player1MoveCount++;
+                    playerOne.setMoveCount(playerOne.getMoveCount() + 1);
                     turn = 2;
                 } else if (turn == 2) {
-                    player2MoveCount++;
+                    playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
                     turn = 1;
                 }
                 break;
@@ -405,10 +392,10 @@ public class ChessGUI {
                 chessPieces.get(pm.chessPieceIndex).setY(pm.finalPos.y);
             }
             if (turn == 1) {
-                player1MoveCount++;
+                playerOne.setMoveCount(playerOne.getMoveCount() + 1);
                 turn = 2;
             } else if (turn == 2) {
-                player2MoveCount++;
+                playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
                 turn = 1;
             }
             isHandled = true;
@@ -544,7 +531,7 @@ public class ChessGUI {
         //Depromote
         depromote(chp);
 
-        p1CapturedPieces.add(chp);
+        playerOne.getCapturedPieces().add(chp);
 
         switch (chp.getType()) {
             case KNIGHT:
@@ -578,7 +565,7 @@ public class ChessGUI {
         //Depromote
         depromote(chp);
 
-        p2CapturedPieces.add(chp);
+        playerTwo.getCapturedPieces().add(chp);
 
         switch (chp.getType()) {
             case KNIGHT:
@@ -850,8 +837,8 @@ public class ChessGUI {
     }
 
     private void resetCapturedPieces() {
-        p1CapturedPieces.clear();
-        p2CapturedPieces.clear();
+        playerOne.getCapturedPieces().clear();
+        playerTwo.getCapturedPieces().clear();
 
         resetCapturedSquares();
     }
@@ -1046,8 +1033,6 @@ public class ChessGUI {
     //Initializes chess board piece places
     private void setupNewGame(boolean isWithAI) {
 
-        player1MoveCount = 0;
-        player2MoveCount = 0;
         isPlayingWithAI = isWithAI;
 
         resetCapturedPieces();
@@ -1126,11 +1111,11 @@ public class ChessGUI {
         if (turn == 1) {
             timer2.stop();
             timer1.start();
-            turnPlay.setText("Turno: Jogador 1. Total de jogadas: " + player1MoveCount + " | Modo de jogo: " + modoDeJogo);
+            turnPlay.setText("Turno: Jogador 1. Total de jogadas: " + playerOne.getMoveCount() + " | Modo de jogo: " + modoDeJogo);
         } else if (turn == 2) {
             timer1.stop();
             timer2.start();
-            turnPlay.setText("Turno: Jogador 2. Total de jogadas: " + player2MoveCount + " | Modo de jogo: " + modoDeJogo);
+            turnPlay.setText("Turno: Jogador 2. Total de jogadas: " + playerTwo.getMoveCount() + " | Modo de jogo: " + modoDeJogo);
         } else if (turn == 3) {
             turnPlay.setText("Fim de jogo");
             resetGame();
