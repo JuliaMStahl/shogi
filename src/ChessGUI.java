@@ -203,11 +203,7 @@ public class ChessGUI {
                             if (chp.getType() == PieceType.KING) {
                                 JOptionPane.showMessageDialog(null, "Player 1 Wins !", "Game Over",
                                         JOptionPane.INFORMATION_MESSAGE);
-                                resetCapturedSquares();
-                                controller.setupNewGame();
-                                resetTime();
-                                redrawBoard();
-                                controller.setTurn(3);
+                                handleWin();
                             }
                             addP1CapturedPiece(chp);
                             controller.getChessPieces().remove(chp);
@@ -223,11 +219,7 @@ public class ChessGUI {
                             if (chp.getType() == PieceType.KING) {
                                 JOptionPane.showMessageDialog(null, "Player 2 Wins !", "Game Over",
                                         JOptionPane.INFORMATION_MESSAGE);
-                                resetCapturedSquares();
-                                controller.setupNewGame();
-                                resetTime();
-                                redrawBoard();
-                                controller.setTurn(3);
+                                handleWin();
                             }
                             addP2CapturedPiece(chp);
                             controller.getChessPieces().remove(chp);
@@ -248,6 +240,14 @@ public class ChessGUI {
         }
 
         return isHandled;
+    }
+
+    private void handleWin() {
+        resetCapturedSquares();
+        controller.setupNewGame();
+        resetTime();
+        redrawBoard();
+        controller.setTurn(3);
     }
 
     private void checkPromotion(ChessPiece chp, int x, int y) {
@@ -308,11 +308,7 @@ public class ChessGUI {
         if (controller.getChessPieces().get(pm.chessPieceIndex).getPlayer() == PLAYER_ONE) {
             if (pieceGoingToCapture.getType() == PieceType.KING) {
                 JOptionPane.showMessageDialog(null, "Player 1 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                resetCapturedSquares();
-                controller.setupNewGame();
-                resetTime();
-                redrawBoard();
-                controller.setTurn(3);
+                handleWin();
             }
             addP1CapturedPiece(pieceGoingToCapture);
             controller.getChessPieces().remove(pieceGoingToCapture);
@@ -321,11 +317,7 @@ public class ChessGUI {
         } else {
             if (pieceGoingToCapture.getType() == PieceType.KING) {
                 JOptionPane.showMessageDialog(null, "Player 2 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                resetCapturedSquares();
-                controller.setupNewGame();
-                resetTime();
-                redrawBoard();
-                controller.setTurn(3);
+                handleWin();
             }
             addP2CapturedPiece(pieceGoingToCapture);
             controller.getChessPieces().remove(pieceGoingToCapture);
