@@ -9,7 +9,6 @@ public class ChessController {
     private Player playerOne = new Player(1);
     private Player playerTwo = new Player(2);
 
-
     public ChessController() {
     }
 
@@ -18,13 +17,14 @@ public class ChessController {
         playerTwo.getCapturedPieces().clear();
     }
 
-    public void setupNewGame(boolean isWithAI, ChessGUI gui ) {
+    public void setupNewGame(boolean isWithAI, ChessGUI gui) {
 
         isPlayingWithAI = isWithAI;
 
         resetCapturedPieces();
 
-        if (isWithAI) cpuAI = new ChessAI(this);
+        if (isWithAI)
+            cpuAI = new ChessAI(this);
 
         chessPieces = new ArrayList<>();
 
@@ -75,7 +75,7 @@ public class ChessController {
                 }
             }
         }
-        return 0; //not occupied
+        return 0; // not occupied
     }
 
     public ChessPiece getPieceAt(int x, int y) {
@@ -104,37 +104,45 @@ public class ChessController {
             case ROOK:
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(r, 0));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY()) != 0) break;
+                    if (isOccupied(chp.getX() + pf * r, chp.getY()) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(-r, 0));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY()) != 0) break;
+                    if (isOccupied(chp.getX() - pf * r, chp.getY()) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(0, r));
-                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0) break;
+                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(0, -r));
-                    if (isOccupied(chp.getX(), chp.getY() - pf * r) != 0) break;
+                    if (isOccupied(chp.getX(), chp.getY() - pf * r) != 0)
+                        break;
                 }
                 break;
             case BISHOP:
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(r, r));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY() + pf * r) != 0) break;
+                    if (isOccupied(chp.getX() + pf * r, chp.getY() + pf * r) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(-r, -r));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY() - pf * r) != 0) break;
+                    if (isOccupied(chp.getX() - pf * r, chp.getY() - pf * r) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(-r, r));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY() + pf * r) != 0) break;
+                    if (isOccupied(chp.getX() - pf * r, chp.getY() + pf * r) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(r, -r));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY() - pf * r) != 0) break;
+                    if (isOccupied(chp.getX() + pf * r, chp.getY() - pf * r) != 0)
+                        break;
                 }
                 break;
             case GOLDGEN:
@@ -163,7 +171,8 @@ public class ChessController {
             case LANCE:
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(0, r));
-                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0) break;
+                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0)
+                        break;
                 }
                 break;
             case PAWN:
@@ -172,19 +181,23 @@ public class ChessController {
             case ROOK_P:
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(r, 0));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY()) != 0) break;
+                    if (isOccupied(chp.getX() + pf * r, chp.getY()) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(-r, 0));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY()) != 0) break;
+                    if (isOccupied(chp.getX() - pf * r, chp.getY()) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(0, r));
-                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0) break;
+                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(0, -r));
-                    if (isOccupied(chp.getX(), chp.getY() - pf * r) != 0) break;
+                    if (isOccupied(chp.getX(), chp.getY() - pf * r) != 0)
+                        break;
                 }
                 possibleMoves.add(new Point(1, 1));
                 possibleMoves.add(new Point(1, -1));
@@ -194,19 +207,23 @@ public class ChessController {
             case BISHOP_P:
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(r, r));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY() + pf * r) != 0) break;
+                    if (isOccupied(chp.getX() + pf * r, chp.getY() + pf * r) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(-r, -r));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY() - pf * r) != 0) break;
+                    if (isOccupied(chp.getX() - pf * r, chp.getY() - pf * r) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(-r, r));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY() + pf * r) != 0) break;
+                    if (isOccupied(chp.getX() - pf * r, chp.getY() + pf * r) != 0)
+                        break;
                 }
                 for (int r = 1; r < 9; r++) {
                     possibleMoves.add(new Point(r, -r));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY() - pf * r) != 0) break;
+                    if (isOccupied(chp.getX() + pf * r, chp.getY() - pf * r) != 0)
+                        break;
                 }
                 possibleMoves.add(new Point(0, 1));
                 possibleMoves.add(new Point(0, -1));
@@ -216,6 +233,10 @@ public class ChessController {
 
         }
         return possibleMoves;
+    }
+
+    public void changeLanguage(ChessGUI gui) {
+        Translation.setSelectedLanguage(LanguagesEnum.PT);
     }
 
     public Player getPlayerOne() {
