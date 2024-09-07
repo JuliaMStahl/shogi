@@ -1,4 +1,3 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -6,8 +5,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -33,34 +30,6 @@ public class ChessGUI {
     public PromotionActions selectedPieceActions;
     public ArrayList<Point> readyToMoveSquares = new ArrayList<>();
     public ArrayList<Point> readyToCaptureSquares = new ArrayList<>();
-    private BufferedImage kingImage1;
-    private BufferedImage rookImage1;
-    private BufferedImage bishopImage1;
-    private BufferedImage goldImage1;
-    private BufferedImage silverImage1;
-    private BufferedImage knightImage1;
-    private BufferedImage lanceImage1;
-    private BufferedImage pawnImage1;
-    private BufferedImage rookPImage1;
-    private BufferedImage bishopPImage1;
-    private BufferedImage silverPImage1;
-    private BufferedImage knightPImage1;
-    private BufferedImage lancePImage1;
-    private BufferedImage pawnPImage1;
-    private BufferedImage kingImage2;
-    private BufferedImage rookImage2;
-    private BufferedImage bishopImage2;
-    private BufferedImage goldImage2;
-    private BufferedImage silverImage2;
-    private BufferedImage knightImage2;
-    private BufferedImage lanceImage2;
-    private BufferedImage pawnImage2;
-    private BufferedImage rookPImage2;
-    private BufferedImage bishopPImage2;
-    private BufferedImage silverPImage2;
-    private BufferedImage knightPImage2;
-    private BufferedImage lancePImage2;
-    private BufferedImage pawnPImage2;
     private JPanel chessBoard;
     private String modoDeJogo = "Não definido";
     private boolean daltonicMode = false;
@@ -487,7 +456,7 @@ public class ChessGUI {
     }
 
     public final void initializeGui() {
-        loadImages();
+        ChessPiece.loadImages();
         initializeTimers(); // inicializa cronometro
         setupToolBar();
         setupMainPanel();
@@ -628,24 +597,24 @@ public class ChessGUI {
         JPanel panel = new JPanel(new GridLayout(4, 4));
         panel.setBackground(ochre);
         JButton[] capturedSquares = playerNumber == PLAYER_ONE ? p1CapturedSquares : p2CapturedSquares;
-        ImageIcon[] images = playerNumber == PLAYER_ONE ? new ImageIcon[] {
-                new ImageIcon(knightImage1),
-                new ImageIcon(bishopImage1),
-                new ImageIcon(rookImage1),
-                new ImageIcon(goldImage1),
-                new ImageIcon(silverImage1),
-                new ImageIcon(pawnImage1),
-                new ImageIcon(lanceImage1)
+        ImageIcon[] images = playerNumber == PLAYER_ONE ? new ImageIcon[]{
+                new ImageIcon(ChessPiece.getPieceImageByType(1, PieceType.KNIGHT)),
+                new ImageIcon(ChessPiece.getPieceImageByType(1, PieceType.BISHOP)),
+                new ImageIcon(ChessPiece.getPieceImageByType(1, PieceType.ROOK)),
+                new ImageIcon(ChessPiece.getPieceImageByType(1, PieceType.GOLDGEN)),
+                new ImageIcon(ChessPiece.getPieceImageByType(1, PieceType.SILVERGEN)),
+                new ImageIcon(ChessPiece.getPieceImageByType(1, PieceType.PAWN)),
+                new ImageIcon(ChessPiece.getPieceImageByType(1, PieceType.LANCE)),
         }
-                : new ImageIcon[] {
-                        new ImageIcon(pawnImage2),
-                        new ImageIcon(lanceImage2),
-                        new ImageIcon(goldImage2),
-                        new ImageIcon(silverImage2),
-                        new ImageIcon(bishopImage2),
-                        new ImageIcon(rookImage2),
-                        new ImageIcon(knightImage2)
-                };
+                : new ImageIcon[]{
+                new ImageIcon(ChessPiece.getPieceImageByType(2, PieceType.PAWN)),
+                new ImageIcon(ChessPiece.getPieceImageByType(2, PieceType.LANCE)),
+                new ImageIcon(ChessPiece.getPieceImageByType(2, PieceType.GOLDGEN)),
+                new ImageIcon(ChessPiece.getPieceImageByType(2, PieceType.SILVERGEN)),
+                new ImageIcon(ChessPiece.getPieceImageByType(2, PieceType.BISHOP)),
+                new ImageIcon(ChessPiece.getPieceImageByType(2, PieceType.ROOK)),
+                new ImageIcon(ChessPiece.getPieceImageByType(2, PieceType.KNIGHT)),
+        };
 
         PieceType[] types = {
                 PieceType.PAWN, PieceType.LANCE, PieceType.KNIGHT,
@@ -702,52 +671,6 @@ public class ChessGUI {
         return gui;
     }
 
-    // Load Piece Images from Resource
-    private void loadImages() {
-        try {
-            kingImage1 = ImageIO.read(this.getClass().getResource("0.png"));
-            rookImage1 = ImageIO.read(this.getClass().getResource("1.png"));
-            bishopImage1 = ImageIO.read(this.getClass().getResource("2.png"));
-            goldImage1 = ImageIO.read(this.getClass().getResource("3.png"));
-            silverImage1 = ImageIO.read(this.getClass().getResource("4.png"));
-            knightImage1 = ImageIO.read(this.getClass().getResource("5.png"));
-            lanceImage1 = ImageIO.read(this.getClass().getResource("6.png"));
-            pawnImage1 = ImageIO.read(this.getClass().getResource("7.png"));
-            rookPImage1 = ImageIO.read(this.getClass().getResource("8.png"));
-            bishopPImage1 = ImageIO.read(this.getClass().getResource("9.png"));
-            silverPImage1 = ImageIO.read(this.getClass().getResource("10.png"));
-            knightPImage1 = ImageIO.read(this.getClass().getResource("11.png"));
-            lancePImage1 = ImageIO.read(this.getClass().getResource("12.png"));
-            pawnPImage1 = ImageIO.read(this.getClass().getResource("13.png"));
-
-            kingImage2 = rotate180(ImageIO.read(this.getClass().getResource("0_2.png")));
-            rookImage2 = rotate180(ImageIO.read(this.getClass().getResource("1_2.png")));
-            bishopImage2 = rotate180(ImageIO.read(this.getClass().getResource("2_2.png")));
-            goldImage2 = rotate180(ImageIO.read(this.getClass().getResource("3_2.png")));
-            silverImage2 = rotate180(ImageIO.read(this.getClass().getResource("4_2.png")));
-            knightImage2 = rotate180(ImageIO.read(this.getClass().getResource("5_2.png")));
-            lanceImage2 = rotate180(ImageIO.read(this.getClass().getResource("6_2.png")));
-            pawnImage2 = rotate180(ImageIO.read(this.getClass().getResource("7_2.png")));
-            rookPImage2 = rotate180(ImageIO.read(this.getClass().getResource("8_2.png")));
-            bishopPImage2 = rotate180(ImageIO.read(this.getClass().getResource("9_2.png")));
-            silverPImage2 = rotate180(ImageIO.read(this.getClass().getResource("10_2.png")));
-            knightPImage2 = rotate180(ImageIO.read(this.getClass().getResource("11_2.png")));
-            lancePImage2 = rotate180(ImageIO.read(this.getClass().getResource("12_2.png")));
-            pawnPImage2 = rotate180(ImageIO.read(this.getClass().getResource("13_2.png")));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    public BufferedImage rotate180(BufferedImage bi) {
-        AffineTransform tx = new AffineTransform();
-        tx.rotate(Math.PI, bi.getWidth() / 2, bi.getHeight() / 2);
-        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-        return op.filter(bi, null);
-    }
-
     public void redrawBoard() {
         // Clear Previous State
         for (int ii = 0; ii < 9; ii++) {
@@ -783,97 +706,7 @@ public class ChessGUI {
         }
 
         for (ChessPiece chp : controller.getChessPieces()) {
-            if (chp.getPlayer() == PLAYER_ONE) {
-                switch (chp.getType()) {
-                    case KING:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(kingImage1));
-                        break;
-                    case ROOK:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(rookImage1));
-                        break;
-                    case BISHOP:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(bishopImage1));
-                        break;
-                    case GOLDGEN:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(goldImage1));
-                        break;
-                    case SILVERGEN:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(silverImage1));
-                        break;
-                    case KNIGHT:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(knightImage1));
-                        break;
-                    case LANCE:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(lanceImage1));
-                        break;
-                    case PAWN:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(pawnImage1));
-                        break;
-                    case ROOK_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(rookPImage1));
-                        break;
-                    case BISHOP_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(bishopPImage1));
-                        break;
-                    case SILVERGEN_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(silverPImage1));
-                        break;
-                    case KNIGHT_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(knightPImage1));
-                        break;
-                    case LANCE_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(lancePImage1));
-                        break;
-                    case PAWN_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(pawnPImage1));
-                        break;
-                }
-            } else {
-                switch (chp.getType()) {
-                    case KING:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(kingImage2));
-                        break;
-                    case ROOK:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(rookImage2));
-                        break;
-                    case BISHOP:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(bishopImage2));
-                        break;
-                    case GOLDGEN:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(goldImage2));
-                        break;
-                    case SILVERGEN:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(silverImage2));
-                        break;
-                    case KNIGHT:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(knightImage2));
-                        break;
-                    case LANCE:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(lanceImage2));
-                        break;
-                    case PAWN:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(pawnImage2));
-                        break;
-                    case ROOK_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(rookPImage2));
-                        break;
-                    case BISHOP_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(bishopPImage2));
-                        break;
-                    case SILVERGEN_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(silverPImage2));
-                        break;
-                    case KNIGHT_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(knightPImage2));
-                        break;
-                    case LANCE_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(lancePImage2));
-                        break;
-                    case PAWN_P:
-                        chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(pawnPImage2));
-                        break;
-                }
-            }
+            chessBoardSquares[chp.getX()][chp.getY()].setIcon(new ImageIcon(chp.getPieceImage()));
         }
     }
 
