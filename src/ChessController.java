@@ -235,8 +235,12 @@ public class ChessController {
         return possibleMoves;
     }
 
-    public void changeLanguage(ChessGUI gui) {
-        Translation.setSelectedLanguage(LanguagesEnum.PT);
+    public void changeLanguage() {
+        if (Translation.getSelectedLanguage() == LanguagesEnum.EN) {
+            Translation.setSelectedLanguage(LanguagesEnum.PT);
+        } else {
+            Translation.setSelectedLanguage(LanguagesEnum.EN);
+        }
     }
 
     public Player getPlayerOne() {

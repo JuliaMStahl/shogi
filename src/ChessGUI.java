@@ -70,7 +70,6 @@ public class ChessGUI {
     }
 
     private void initializeTimers() {
-
         timerLabel1 = new JLabel(Translation.translate(StringsEnum.PLAYER_ONE_TIMER_LABEL) + " 15:00");
         timerLabel2 = new JLabel(Translation.translate(StringsEnum.PLAYER_TWO_TIMER_LABEL) + " 15:00");
 
@@ -586,7 +585,13 @@ public class ChessGUI {
         tools.add(createGameAction(
                 Translation.translate(StringsEnum.NEW_GAME) + Translation.translate(StringsEnum.AGAINST_AI), true));
 
-        languageButton.addActionListener(e -> controller.changeLanguage(this));
+        languageButton.addActionListener(e -> {
+            controller.changeLanguage();
+            languageButton.setText(Translation.translate(StringsEnum.CHANGE_LANGUAGE));
+
+            updatePieceCounts();
+            redrawBoard();
+        });
         tools.add(languageButton);
 
         JButton instructionsButton = new JButton(Translation.translate(StringsEnum.INSTRUCTIONS));
