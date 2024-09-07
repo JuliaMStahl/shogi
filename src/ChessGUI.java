@@ -162,18 +162,6 @@ public class ChessGUI {
 
     }
 
-    // Método para capturar peças
-    public void capturePiece(ChessPiece piece) {
-        if (piece.getPlayer() != PLAYER_ONE) {
-            controller.getPlayerOne().setCapturedCount(controller.getPlayerOne().getCapturedCount() + 1);
-            controller.getPlayerTwo().setPieceCount(controller.getPlayerTwo().getPieceCount() - 1);
-        } else {
-            controller.getPlayerTwo().setCapturedCount(controller.getPlayerTwo().getCapturedCount() + 1);
-            controller.getPlayerOne().setPieceCount(controller.getPlayerOne().getPieceCount() - 1);
-        }
-        updatePieceCounts();
-    }
-
     public boolean handlePieceMove(int x, int y) {
         boolean isHandled = false;
         for (Point rtm : readyToMoveSquares) {
@@ -223,7 +211,8 @@ public class ChessGUI {
                             }
                             addP1CapturedPiece(chp);
                             controller.getChessPieces().remove(chp);
-                            capturePiece(chp);
+                            controller.capturePiece(chp);
+                            updatePieceCounts();
                             break;
                         }
                     }
@@ -242,7 +231,8 @@ public class ChessGUI {
                             }
                             addP2CapturedPiece(chp);
                             controller.getChessPieces().remove(chp);
-                            capturePiece(chp);
+                            controller.capturePiece(chp);
+                            updatePieceCounts();
                             break;
                         }
                     }
@@ -326,7 +316,8 @@ public class ChessGUI {
             }
             addP1CapturedPiece(pieceGoingToCapture);
             controller.getChessPieces().remove(pieceGoingToCapture);
-            capturePiece(pieceGoingToCapture);
+            controller.capturePiece(pieceGoingToCapture);
+            updatePieceCounts();
         } else {
             if (pieceGoingToCapture.getType() == PieceType.KING) {
                 JOptionPane.showMessageDialog(null, "Player 2 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
@@ -338,7 +329,8 @@ public class ChessGUI {
             }
             addP2CapturedPiece(pieceGoingToCapture);
             controller.getChessPieces().remove(pieceGoingToCapture);
-            capturePiece(pieceGoingToCapture);
+            controller.capturePiece(pieceGoingToCapture);
+            updatePieceCounts();
         }
 
     }

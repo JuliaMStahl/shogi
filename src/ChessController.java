@@ -17,6 +17,16 @@ public class ChessController {
         playerTwo = new Player(2);
     }
 
+    public void capturePiece(ChessPiece piece) {
+        if (piece.getPlayer() != 1) {
+            playerOne.setCapturedCount(playerOne.getCapturedCount() + 1);
+            playerTwo.setPieceCount(playerTwo.getPieceCount() - 1);
+        } else {
+            playerTwo.setCapturedCount(playerTwo.getCapturedCount() + 1);
+            playerOne.setPieceCount(playerOne.getPieceCount() - 1);
+        }
+    }
+
     public void updateTurnAndMoveCount() {
         if (turn == 1) {
             playerOne.setMoveCount(playerOne.getMoveCount() + 1);
