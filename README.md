@@ -24,7 +24,7 @@ To run the game locally:
     ```
 3. Run the game:
     ```bash
-    java -cp out/production/Shogi Main
+    java -cp out/production/Shogi ChessGUI
     ```
 
 ## 🎮 Usage
@@ -37,4 +37,4 @@ To run the game locally:
 ## 🌟 Contributing
 Feel free to fork the project and submit pull requests. Contributions are welcome!
 
----
+---w
