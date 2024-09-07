@@ -225,7 +225,7 @@ public class ChessGUI {
                                 JOptionPane.showMessageDialog(null, "Player 1 Wins !", "Game Over",
                                         JOptionPane.INFORMATION_MESSAGE);
                                 resetCapturedSquares();
-                                controller.setupNewGame(controller.isPlayingWithAI(), this);
+                                controller.setupNewGame();
                                 resetTime();
                                 redrawBoard();
                                 controller.setTurn(3);
@@ -244,7 +244,7 @@ public class ChessGUI {
                                 JOptionPane.showMessageDialog(null, "Player 2 Wins !", "Game Over",
                                         JOptionPane.INFORMATION_MESSAGE);
                                 resetCapturedSquares();
-                                controller.setupNewGame(controller.isPlayingWithAI(), this);
+                                controller.setupNewGame();
                                 resetTime();
                                 redrawBoard();
                                 controller.setTurn(3);
@@ -334,7 +334,7 @@ public class ChessGUI {
             if (pieceGoingToCapture.getType() == PieceType.KING) {
                 JOptionPane.showMessageDialog(null, "Player 1 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
                 resetCapturedSquares();
-                controller.setupNewGame(controller.isPlayingWithAI(), this);
+                controller.setupNewGame();
                 resetTime();
                 redrawBoard();
                 controller.setTurn(3);
@@ -346,7 +346,7 @@ public class ChessGUI {
             if (pieceGoingToCapture.getType() == PieceType.KING) {
                 JOptionPane.showMessageDialog(null, "Player 2 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
                 resetCapturedSquares();
-                controller.setupNewGame(controller.isPlayingWithAI(), this);
+                controller.setupNewGame();
                 resetTime();
                 redrawBoard();
                 controller.setTurn(3);
@@ -644,7 +644,8 @@ public class ChessGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 resetCapturedSquares();
-                controller.setupNewGame(isAI, ChessGUI.this);
+                controller.setPlayingWithAI(isAI);
+                controller.setupNewGame();
                 resetTime();
                 redrawBoard();
             }
