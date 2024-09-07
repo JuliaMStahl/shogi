@@ -13,8 +13,10 @@ import javax.swing.Timer;
 public class ChessGUI {
 
     // Variáveis para contar as peças capturadas para ambos os jogadores
-    private Player playerOne = new Player(1);
-    private Player playerTwo = new Player(2);
+
+    private ChessController controller = new ChessController();
+    private Player playerOne = controller.getPlayerOne();
+    private Player playerTwo = controller.getPlayerTwo();
     private final JLabel playerOnePieceCountLabel = new JLabel();
     private final JLabel playerTwoPieceCountLabel = new JLabel();
     private final JLabel playerOneCapturedCountLabel = new JLabel();
@@ -22,8 +24,6 @@ public class ChessGUI {
 
     private final JPanel gui = new JPanel(new BorderLayout(3, 3));
     private final JButton[][] chessBoardSquares = new JButton[9][9];
-
-    public ArrayList<ChessPiece> chessPieces = new ArrayList<>();
     public ChessPiece selectedPiece;
 
     private final JLabel turnPlay = new JLabel();
@@ -32,10 +32,6 @@ public class ChessGUI {
     public ArrayList<Point> readyToCaptureSquares = new ArrayList<>();
     private final JButton[] p1CapturedSquares = new JButton[7];
     private final JButton[] p2CapturedSquares = new JButton[7];
-
-    private boolean isPlayingWithAI = false;
-
-    public ChessAI cpuAI;
 
     private BufferedImage kingImage1;
     private BufferedImage rookImage1;
@@ -68,8 +64,6 @@ public class ChessGUI {
     private BufferedImage pawnPImage2;
 
     private JPanel chessBoard;
-
-    private int turn = 1;
     private String modoDeJogo = "Não definido";
 
     private final Color mainbg = new Color(230, 230, 230);
@@ -131,7 +125,7 @@ public class ChessGUI {
     // Atualiza labels de peças dos jogadores
     private void updatePieceCounts() {
         playerOnePieceCountLabel.setText("Peças do Jogador 1: " + playerOne.getPieceCount());
-        if (isPlayingWithAI) {
+        if (controller.isPlayingWithAI()) {
             playerTwoPieceCountLabel.setText("Peças do IA Player: " + playerTwo.getPieceCount());
             playerTwoCapturedCountLabel.setText("Peças Capturadas pelo IA Player: " + playerTwo.getCapturedCount());
         } else {
@@ -218,7 +212,7 @@ public class ChessGUI {
                 selectedPiece.setY(rtm.y);
 
                 if (selectedPieceActions.mustAdd) {
-                    chessPieces.add(selectedPiece);
+                    controller.getChessPieces().add(selectedPiece);
                     if (selectedPieceActions.mustAddplayer == 1) {
                         p1CapturedSquares[selectedPieceActions.mustAddbutIndex].setText(Integer.toString(Integer.parseInt(p1CapturedSquares[selectedPieceActions.mustAddbutIndex].getText()) - 1));
                     } else {
@@ -228,12 +222,12 @@ public class ChessGUI {
                 }
                 //redrawBoard();
                 isHandled = true;
-                if (turn == 1) {
+                if (controller.getTurn() == 1) {
                     playerOne.setMoveCount(playerOne.getMoveCount() + 1);
-                    turn = 2;
-                } else if (turn == 2) {
+                    controller.setTurn(2);
+                } else if (controller.getTurn() == 2) {
                     playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
-                    turn = 1;
+                    controller.setTurn(1);
                 }
                 break;
             }
@@ -246,31 +240,37 @@ public class ChessGUI {
         for (Point rtm : readyToCaptureSquares) {
             if (rtm.x == x && rtm.y == y) {
                 if (selectedPiece.getPlayer() == PLAYER_ONE) {
-                    for (ChessPiece chp : chessPieces) {
+                    for (ChessPiece chp : controller.getChessPieces()) {
                         if (chp.getX() == rtm.x && chp.getY() == rtm.y) {
                             //p1CapturedPieces.add(chp);
                             if (chp.getType() == PieceType.KING) {
                                 JOptionPane.showMessageDialog(null, "Player 1 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                                setupNewGame(isPlayingWithAI);
-                                turn = 3;
+                                resetCapturedSquares();
+                                controller.setupNewGame(controller.isPlayingWithAI(), this);
+                                resetTime();
+                                redrawBoard();
+                                controller.setTurn(3);
                             }
                             addP1CapturedPiece(chp);
-                            chessPieces.remove(chp);
+                            controller.getChessPieces().remove(chp);
                             capturePiece(chp);
                             break;
                         }
                     }
                 } else {
-                    for (ChessPiece chp : chessPieces) {
+                    for (ChessPiece chp : controller.getChessPieces()) {
                         if (chp.getX() == rtm.x && chp.getY() == rtm.y) {
                             //p2CapturedPieces.add(chp);
                             if (chp.getType() == PieceType.KING) {
                                 JOptionPane.showMessageDialog(null, "Player 2 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                                setupNewGame(isPlayingWithAI);
-                                turn = 3;
+                                resetCapturedSquares();
+                                controller.setupNewGame(controller.isPlayingWithAI(), this);
+                                resetTime();
+                                redrawBoard();
+                                controller.setTurn(3);
                             }
                             addP2CapturedPiece(chp);
-                            chessPieces.remove(chp);
+                            controller.getChessPieces().remove(chp);
                             capturePiece(chp);
                             break;
                         }
@@ -281,12 +281,12 @@ public class ChessGUI {
                 selectedPiece.setY(rtm.y);
                 //redrawBoard();
                 isHandled = true;
-                if (turn == 1) {
+                if (controller.getTurn() == 1) {
                     playerOne.setMoveCount(playerOne.getMoveCount() + 1);
-                    turn = 2;
-                } else if (turn == 2) {
+                    controller.setTurn(2);
+                } else if (controller.getTurn() == 2) {
                     playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
-                    turn = 1;
+                    controller.setTurn(1);
                 }
                 break;
             }
@@ -308,16 +308,16 @@ public class ChessGUI {
     }
 
     private void pieceMove(ChessPiece chp) {
-        for (Point move : getPossibleMoves(chp)) {
+        for (Point move : controller.getPossibleMoves(chp)) {
             int pf = (chp.getPlayer() == PLAYER_TWO) ? 1 : -1;
             int newx = (chp.getX() + move.x * pf);
             int newy = (chp.getY() + move.y * pf);
 
             if (newx >= 0 && newy >= 0 && newx <= 8 && newy <= 8) {
-                if (isOccupied(newx, newy) == 0) {
+                if (controller.isOccupied(newx, newy) == 0) {
                     chessBoardSquares[newx][newy].setBackground(Color.cyan);
                     readyToMoveSquares.add(new Point(newx, newy));
-                } else if (isOccupied(newx, newy) != chp.getPlayer()) {
+                } else if (controller.isOccupied(newx, newy) != chp.getPlayer()) {
                     chessBoardSquares[newx][newy].setBackground(Color.magenta);
                     readyToCaptureSquares.add(new Point(newx, newy));
                 }
@@ -326,10 +326,10 @@ public class ChessGUI {
     }
 
     public void handlePieceSelect(int x, int y) {
-        for (ChessPiece chp : chessPieces) {
+        for (ChessPiece chp : controller.getChessPieces()) {
             if (chp.getX() == x && chp.getY() == y) {
                 //Select the Piece
-                if (turn == chp.getPlayer()) {
+                if (controller.getTurn() == chp.getPlayer()) {
                     selectedPiece = chp;
                     chessBoardSquares[x][y].setBackground(Color.green);
                     checkPromotion(chp, x, y);
@@ -341,7 +341,7 @@ public class ChessGUI {
 
     private PieceMove iAPlays() {
 
-        PieceMove pm = cpuAI.playMove();
+        PieceMove pm = controller.getCpuAI().playMove();
         System.out.println("AI Moving " + pm.chessPieceIndex + " to " + pm.finalPos.toString());
 
         return pm;
@@ -350,23 +350,29 @@ public class ChessGUI {
 
     private void showWinner(PieceMove pm, ChessPiece pieceGoingToCapture) {
 
-        if (chessPieces.get(pm.chessPieceIndex).getPlayer() == PLAYER_ONE) {
+        if (controller.getChessPieces().get(pm.chessPieceIndex).getPlayer() == PLAYER_ONE) {
             if (pieceGoingToCapture.getType() == PieceType.KING) {
                 JOptionPane.showMessageDialog(null, "Player 1 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                setupNewGame(isPlayingWithAI);
-                turn = 3;
+                resetCapturedSquares();
+                controller.setupNewGame(controller.isPlayingWithAI(), this);
+                resetTime();
+                redrawBoard();
+                controller.setTurn(3);
             }
             addP1CapturedPiece(pieceGoingToCapture);
-            chessPieces.remove(pieceGoingToCapture);
+            controller.getChessPieces().remove(pieceGoingToCapture);
             capturePiece(pieceGoingToCapture);
         } else {
             if (pieceGoingToCapture.getType() == PieceType.KING) {
                 JOptionPane.showMessageDialog(null, "Player 2 Wins !", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                setupNewGame(isPlayingWithAI);
-                turn = 3;
+                resetCapturedSquares();
+                controller.setupNewGame(controller.isPlayingWithAI(), this);
+                resetTime();
+                redrawBoard();
+                controller.setTurn(3);
             }
             addP2CapturedPiece(pieceGoingToCapture);
-            chessPieces.remove(pieceGoingToCapture);
+            controller.getChessPieces().remove(pieceGoingToCapture);
             capturePiece(pieceGoingToCapture);
         }
 
@@ -376,27 +382,27 @@ public class ChessGUI {
 
         boolean isHandled = false;
 
-        if (turn == 2 && isPlayingWithAI) {
+        if (controller.getTurn() == 2 && controller.isPlayingWithAI()) {
             PieceMove pm = iAPlays();
 
             if (!pm.isGoingToCapture) {
-                chessPieces.get(pm.chessPieceIndex).setX(pm.finalPos.x);
-                chessPieces.get(pm.chessPieceIndex).setY(pm.finalPos.y);
+                controller.getChessPieces().get(pm.chessPieceIndex).setX(pm.finalPos.x);
+                controller.getChessPieces().get(pm.chessPieceIndex).setY(pm.finalPos.y);
             } else {
-                ChessPiece pieceGoingToCapture = getPieceAt(pm.finalPos.x, pm.finalPos.y);
+                ChessPiece pieceGoingToCapture = controller.getPieceAt(pm.finalPos.x, pm.finalPos.y);
 
                 showWinner(pm, pieceGoingToCapture);
 
                 //Move to Square
-                chessPieces.get(pm.chessPieceIndex).setX(pm.finalPos.x);
-                chessPieces.get(pm.chessPieceIndex).setY(pm.finalPos.y);
+                controller.getChessPieces().get(pm.chessPieceIndex).setX(pm.finalPos.x);
+                controller.getChessPieces().get(pm.chessPieceIndex).setY(pm.finalPos.y);
             }
-            if (turn == 1) {
+            if (controller.getTurn() == 1) {
                 playerOne.setMoveCount(playerOne.getMoveCount() + 1);
-                turn = 2;
-            } else if (turn == 2) {
+                controller.setTurn(2);
+            } else if (controller.getTurn() == 2) {
                 playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
-                turn = 1;
+                controller.setTurn(1);
             }
             isHandled = true;
         }
@@ -422,10 +428,10 @@ public class ChessGUI {
 
         if (isHandled) {
             //muda pra contar tempo  do outro jogador
-            if (turn == 1) {
+            if (controller.getTurn() == 1) {
                 timer2.stop();
                 timer1.start();
-            } else if (turn == 2) {
+            } else if (controller.getTurn() == 2) {
                 timer1.stop();
                 timer2.start();
             }
@@ -447,7 +453,7 @@ public class ChessGUI {
 
         public void actionPerformed(ActionEvent e) {
             boolean b;
-            if (turn == player) {
+            if (controller.getTurn() == player) {
                 if (player == PLAYER_ONE) {
                     b = Integer.parseInt(p1CapturedSquares[butIndex].getText()) > 0;
                 } else {
@@ -466,7 +472,7 @@ public class ChessGUI {
                     if (pieceKind != PieceType.PAWN) {
                         for (int ii = 0; ii < 9; ii++) {
                             for (int jj = 0; jj < 9; jj++) {
-                                if (isOccupied(ii, jj) == 0) {
+                                if (controller.isOccupied(ii, jj) == 0) {
                                     //Select the Piece
                                     chessBoardSquares[ii][jj].setBackground(Color.cyan);
                                     readyToMoveSquares.add(new Point(ii, jj));
@@ -478,7 +484,7 @@ public class ChessGUI {
                             boolean isHavePawn = false;
                             for (int jj = 0; jj < 9; jj++) {
                                 //check for pawn
-                                for (ChessPiece chp : chessPieces) {
+                                for (ChessPiece chp : controller.getChessPieces()) {
                                     if (chp.getX() == ii && chp.getY() == jj) {
                                         if (chp.getPlayer() == player && chp.getType() == PieceType.PAWN) {
                                             isHavePawn = true;
@@ -489,7 +495,7 @@ public class ChessGUI {
                             }
                             if (!isHavePawn) {
                                 for (int jj = 0; jj < 9; jj++) {
-                                    if (isOccupied(ii, jj) == 0) {
+                                    if (controller.isOccupied(ii, jj) == 0) {
                                         //Select the Piece
                                         chessBoardSquares[ii][jj].setBackground(Color.cyan);
                                         readyToMoveSquares.add(new Point(ii, jj));
@@ -596,160 +602,11 @@ public class ChessGUI {
 
     //TODO Add other pieces moves
     //Get Each Piece Possible Moves
-    public ArrayList<Point> getPossibleMoves(ChessPiece chp) {
-        ArrayList<Point> possibleMoves = new ArrayList<>();
-        int pf = (chp.getPlayer() == PLAYER_TWO) ? 1 : -1;
-        switch (chp.getType()) {
-            case KING:
-                possibleMoves.add(new Point(-1, 1));
-                possibleMoves.add(new Point(0, 1));
-                possibleMoves.add(new Point(1, 1));
-                possibleMoves.add(new Point(-1, 0));
-                possibleMoves.add(new Point(1, 0));
-                possibleMoves.add(new Point(-1, -1));
-                possibleMoves.add(new Point(0, -1));
-                possibleMoves.add(new Point(1, -1));
-                break;
-            case ROOK:
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(r, 0));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY()) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(-r, 0));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY()) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(0, r));
-                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(0, -r));
-                    if (isOccupied(chp.getX(), chp.getY() - pf * r) != 0) break;
-                }
-                break;
-            case BISHOP:
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(r, r));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY() + pf * r) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(-r, -r));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY() - pf * r) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(-r, r));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY() + pf * r) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(r, -r));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY() - pf * r) != 0) break;
-                }
-                break;
-            case GOLDGEN:
-            case SILVERGEN_P:
-            case KNIGHT_P:
-            case LANCE_P:
-            case PAWN_P:
-                possibleMoves.add(new Point(-1, 1));
-                possibleMoves.add(new Point(0, 1));
-                possibleMoves.add(new Point(1, 1));
-                possibleMoves.add(new Point(-1, 0));
-                possibleMoves.add(new Point(1, 0));
-                possibleMoves.add(new Point(0, -1));
-                break;
-            case SILVERGEN:
-                possibleMoves.add(new Point(-1, 1));
-                possibleMoves.add(new Point(0, 1));
-                possibleMoves.add(new Point(1, 1));
-                possibleMoves.add(new Point(-1, -1));
-                possibleMoves.add(new Point(1, -1));
-                break;
-            case KNIGHT:
-                possibleMoves.add(new Point(-1, 2));
-                possibleMoves.add(new Point(1, 2));
-                break;
-            case LANCE:
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(0, r));
-                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0) break;
-                }
-                break;
-            case PAWN:
-                possibleMoves.add(new Point(0, 1));
-                break;
-            case ROOK_P:
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(r, 0));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY()) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(-r, 0));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY()) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(0, r));
-                    if (isOccupied(chp.getX(), chp.getY() + pf * r) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(0, -r));
-                    if (isOccupied(chp.getX(), chp.getY() - pf * r) != 0) break;
-                }
-                possibleMoves.add(new Point(1, 1));
-                possibleMoves.add(new Point(1, -1));
-                possibleMoves.add(new Point(-1, 1));
-                possibleMoves.add(new Point(-1, -1));
-                break;
-            case BISHOP_P:
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(r, r));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY() + pf * r) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(-r, -r));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY() - pf * r) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(-r, r));
-                    if (isOccupied(chp.getX() - pf * r, chp.getY() + pf * r) != 0) break;
-                }
-                for (int r = 1; r < 9; r++) {
-                    possibleMoves.add(new Point(r, -r));
-                    if (isOccupied(chp.getX() + pf * r, chp.getY() - pf * r) != 0) break;
-                }
-                possibleMoves.add(new Point(0, 1));
-                possibleMoves.add(new Point(0, -1));
-                possibleMoves.add(new Point(-1, 0));
-                possibleMoves.add(new Point(1, 0));
-                break;
-
-        }
-        return possibleMoves;
-    }
-
-    // 0 1 2
-    public int isOccupied(int x, int y) {
-        for (ChessPiece chp : chessPieces) {
-            if (chp.getX() == x && chp.getY() == y) {
-                if (chp.getPlayer() == PLAYER_ONE) {
-                    return 1;
-                } else {
-                    return 2;
-                }
-            }
-        }
-        return 0; //not occupied
-    }
 
 
-    public ChessPiece getPieceAt(int x, int y) {
-        for (ChessPiece chp : chessPieces) {
-            if (chp.getX() == x && chp.getY() == y) {
-                return chp;
-            }
-        }
-        return null;
-    }
+
+
+
 
     private boolean isPromotable(ChessPiece chp) {
         if (chp.getType() == PieceType.LANCE || chp.getType() == PieceType.PAWN || chp.getType() == PieceType.SILVERGEN
@@ -836,13 +693,6 @@ public class ChessGUI {
         }
     }
 
-    private void resetCapturedPieces() {
-        playerOne.getCapturedPieces().clear();
-        playerTwo.getCapturedPieces().clear();
-
-        resetCapturedSquares();
-    }
-
     private void resetCapturedSquares() {
         for (int i = 0; i < p1CapturedSquares.length; i++) {
             p1CapturedSquares[i].setText("0");
@@ -896,7 +746,10 @@ public class ChessGUI {
         return new AbstractAction(name) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setupNewGame(isAI);
+                resetCapturedSquares();
+                controller.setupNewGame(isAI, ChessGUI.this);
+                resetTime();
+                redrawBoard();
             }
         };
     }
@@ -1031,57 +884,7 @@ public class ChessGUI {
     }
 
     //Initializes chess board piece places
-    private void setupNewGame(boolean isWithAI) {
 
-        isPlayingWithAI = isWithAI;
-
-        resetCapturedPieces();
-
-        if (isWithAI) cpuAI = new ChessAI(this);
-
-        chessPieces = new ArrayList<>();
-
-        chessPieces.add(new ChessPiece(1, PieceType.LANCE, 0, 8));
-        chessPieces.add(new ChessPiece(1, PieceType.KNIGHT, 1, 8));
-        chessPieces.add(new ChessPiece(1, PieceType.SILVERGEN, 2, 8));
-        chessPieces.add(new ChessPiece(1, PieceType.GOLDGEN, 3, 8));
-        chessPieces.add(new ChessPiece(1, PieceType.KING, 4, 8));
-        chessPieces.add(new ChessPiece(1, PieceType.GOLDGEN, 5, 8));
-        chessPieces.add(new ChessPiece(1, PieceType.SILVERGEN, 6, 8));
-        chessPieces.add(new ChessPiece(1, PieceType.KNIGHT, 7, 8));
-        chessPieces.add(new ChessPiece(1, PieceType.LANCE, 8, 8));
-
-        chessPieces.add(new ChessPiece(1, PieceType.BISHOP, 1, 7));
-        chessPieces.add(new ChessPiece(1, PieceType.ROOK, 7, 7));
-
-        for (int pawni = 0; pawni < 9; pawni++) {
-            chessPieces.add(new ChessPiece(1, PieceType.PAWN, pawni, 6));
-        }
-
-        chessPieces.add(new ChessPiece(2, PieceType.LANCE, 0, 0));
-        chessPieces.add(new ChessPiece(2, PieceType.KNIGHT, 1, 0));
-        chessPieces.add(new ChessPiece(2, PieceType.SILVERGEN, 2, 0));
-        chessPieces.add(new ChessPiece(2, PieceType.GOLDGEN, 3, 0));
-        chessPieces.add(new ChessPiece(2, PieceType.KING, 4, 0));
-        chessPieces.add(new ChessPiece(2, PieceType.GOLDGEN, 5, 0));
-        chessPieces.add(new ChessPiece(2, PieceType.SILVERGEN, 6, 0));
-        chessPieces.add(new ChessPiece(2, PieceType.KNIGHT, 7, 0));
-        chessPieces.add(new ChessPiece(2, PieceType.LANCE, 8, 0));
-
-        chessPieces.add(new ChessPiece(2, PieceType.ROOK, 1, 1));
-        chessPieces.add(new ChessPiece(2, PieceType.BISHOP, 7, 1));
-
-        for (int pawni = 0; pawni < 9; pawni++) {
-            chessPieces.add(new ChessPiece(2, PieceType.PAWN, pawni, 2));
-        }
-
-        turn = 1;
-
-        // resetar cronometro
-        resetTime();
-
-        redrawBoard();
-    }
 
     public BufferedImage rotate180(BufferedImage bi) {
         AffineTransform tx = new AffineTransform();
@@ -1102,26 +905,26 @@ public class ChessGUI {
 
         updatePieceCounts();
 
-        if (isPlayingWithAI) {
+        if (controller.isPlayingWithAI()) {
             modoDeJogo = "Player VS IA";
         } else {
             modoDeJogo = "Player VS Player";
         }
 
-        if (turn == 1) {
+        if (controller.getTurn() == 1) {
             timer2.stop();
             timer1.start();
             turnPlay.setText("Turno: Jogador 1. Total de jogadas: " + playerOne.getMoveCount() + " | Modo de jogo: " + modoDeJogo);
-        } else if (turn == 2) {
+        } else if (controller.getTurn() == 2) {
             timer1.stop();
             timer2.start();
             turnPlay.setText("Turno: Jogador 2. Total de jogadas: " + playerTwo.getMoveCount() + " | Modo de jogo: " + modoDeJogo);
-        } else if (turn == 3) {
+        } else if (controller.getTurn() == 3) {
             turnPlay.setText("Fim de jogo");
             resetGame();
         }
 
-        for (ChessPiece chp : chessPieces) {
+        for (ChessPiece chp : controller.getChessPieces()) {
             if (chp.getPlayer() == PLAYER_ONE) {
                 switch (chp.getType()) {
                     case KING:
