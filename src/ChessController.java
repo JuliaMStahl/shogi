@@ -6,10 +6,25 @@ public class ChessController {
     private boolean isPlayingWithAI = false;
     private ArrayList<ChessPiece> chessPieces = new ArrayList<>();
     private int turn = 1;
-    private final Player playerOne = new Player(1);
-    private final Player playerTwo = new Player(2);
+    private Player playerOne = new Player(1);
+    private Player playerTwo = new Player(2);
 
     public ChessController() {
+    }
+
+    public void resetPlayers() {
+        playerOne = new Player(1);
+        playerTwo = new Player(2);
+    }
+
+    public void updateTurnAndMoveCount() {
+        if (turn == 1) {
+            playerOne.setMoveCount(playerOne.getMoveCount() + 1);
+            turn = 2;
+        } else if (turn == 2) {
+            playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
+            turn = 1;
+        }
     }
 
     private void resetCapturedPieces() {
@@ -80,6 +95,7 @@ public class ChessController {
         return null;
     }
 
+    // TODO Add other pieces moves
     public ArrayList<Point> getPossibleMoves(ChessPiece chp) {
         ArrayList<Point> possibleMoves = new ArrayList<>();
         int pf = (chp.getPlayer() == 2) ? 1 : -1;
