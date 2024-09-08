@@ -31,9 +31,6 @@ public class ChessGUI {
     public PromotionActions selectedPieceActions;
     public ArrayList<Point> readyToMoveSquares = new ArrayList<>();
     public ArrayList<Point> readyToCaptureSquares = new ArrayList<>();
-    private Player playerOne = controller.getPlayerOne();
-    private Player playerTwo = controller.getPlayerTwo();
-
     private JPanel chessBoard;
     private String modoDeJogo = "Não definido";
     private boolean daltonicMode = false;
@@ -74,26 +71,26 @@ public class ChessGUI {
         timerLabel2 = new JLabel(Translation.translate(StringsEnum.PLAYER_TWO_TIMER_LABEL) + " 15:00");
 
         timer1 = new Timer(1000, e -> {
-            playerOne.getTotalTime().getAndDecrement();
-            int minutes = playerOne.getTotalTime().get() / 60;
-            int seconds = playerOne.getTotalTime().get() % 60;
+            controller.getPlayerOne().getTotalTime().getAndDecrement();
+            int minutes = controller.getPlayerOne().getTotalTime().get() / 60;
+            int seconds = controller.getPlayerOne().getTotalTime().get() % 60;
             timerLabel1.setText(String.format(Translation.translate(StringsEnum.PLAYER_ONE_TIMER_LABEL) + "%02d:%02d",
                     minutes, seconds));
 
-            if (playerOne.getTotalTime().get() <= 0) {
+            if (controller.getPlayerOne().getTotalTime().get() <= 0) {
                 ((Timer) e.getSource()).stop();
                 timerLabel1.setText(Translation.translate(StringsEnum.PLAYER_ONE_TIMER_LABEL) + " 00:00");
             }
         });
 
         timer2 = new Timer(1000, e -> {
-            playerTwo.getTotalTime().getAndDecrement();
-            int minutes = playerTwo.getTotalTime().get() / 60;
-            int seconds = playerTwo.getTotalTime().get() % 60;
+            controller.getPlayerTwo().getTotalTime().getAndDecrement();
+            int minutes = controller.getPlayerTwo().getTotalTime().get() / 60;
+            int seconds = controller.getPlayerTwo().getTotalTime().get() % 60;
             timerLabel2.setText(String.format(Translation.translate(StringsEnum.PLAYER_TWO_TIMER_LABEL) + "%02d:%02d",
                     minutes, seconds));
 
-            if (playerTwo.getTotalTime().get() <= 0) {
+            if (controller.getPlayerTwo().getTotalTime().get() <= 0) {
                 ((Timer) e.getSource()).stop();
                 timerLabel2.setText(Translation.translate(StringsEnum.PLAYER_TWO_TIMER_LABEL) + " 00:00");
             }
@@ -103,27 +100,32 @@ public class ChessGUI {
     // Atualiza labels de peças dos jogadores
     private void updatePieceCounts() {
         playerOnePieceCountLabel
-                .setText(Translation.translate(StringsEnum.PLAYER_ONE_LABEL) + playerOne.getPieceCount());
+                .setText(Translation.translate(StringsEnum.PLAYER_ONE_LABEL)
+                        + controller.getPlayerOne().getPieceCount());
         playerOneCapturedCountLabel
-                .setText(Translation.translate(StringsEnum.PLAYER_ONE_CAPTURED_LABEL) + playerOne.getCapturedCount());
+                .setText(Translation.translate(StringsEnum.PLAYER_ONE_CAPTURED_LABEL)
+                        + controller.getPlayerOne().getCapturedCount());
 
         if (controller.isPlayingWithAI()) {
             playerTwoPieceCountLabel
-                    .setText(Translation.translate(StringsEnum.PLAYER_TWO_LABEL) + playerTwo.getPieceCount());
+                    .setText(Translation.translate(StringsEnum.PLAYER_TWO_LABEL)
+                            + controller.getPlayerTwo().getPieceCount());
             playerTwoCapturedCountLabel.setText(
-                    Translation.translate(StringsEnum.PLAYER_TWO_CAPTURED_LABEL) + playerTwo.getCapturedCount());
+                    Translation.translate(StringsEnum.PLAYER_TWO_CAPTURED_LABEL)
+                            + controller.getPlayerTwo().getCapturedCount());
         } else {
             playerTwoPieceCountLabel
-                    .setText(Translation.translate(StringsEnum.PLAYER_TWO_LABEL) + playerTwo.getPieceCount());
+                    .setText(Translation.translate(StringsEnum.PLAYER_TWO_LABEL)
+                            + controller.getPlayerTwo().getPieceCount());
             playerTwoCapturedCountLabel.setText(
-                    Translation.translate(StringsEnum.PLAYER_TWO_CAPTURED_LABEL) + playerTwo.getCapturedCount());
+                    Translation.translate(StringsEnum.PLAYER_TWO_CAPTURED_LABEL)
+                            + controller.getPlayerTwo().getCapturedCount());
         }
     }
 
     // Método para reiniciar o jogo
     public void resetGame() {
-        playerOne = new Player(1);
-        playerTwo = new Player(2);
+        controller.resetPlayers();
         updatePieceCounts();
     }
 
@@ -134,26 +136,14 @@ public class ChessGUI {
         if (timer2.isRunning()) {
             timer2.stop();
         }
-        playerOne.getTotalTime().set(900);
-        playerTwo.getTotalTime().set(900);
+        controller.getPlayerOne().getTotalTime().set(900);
+        controller.getPlayerTwo().getTotalTime().set(900);
 
         timerLabel1.setText(Translation.translate(StringsEnum.PLAYER_ONE_TIMER_LABEL) + " 15:00");
         timerLabel2.setText(Translation.translate(StringsEnum.PLAYER_TWO_TIMER_LABEL) + " 15:00");
 
         timer1.start();
 
-    }
-
-    // Método para capturar peças
-    public void capturePiece(ChessPiece piece) {
-        if (piece.getPlayer() != PLAYER_ONE) {
-            playerOne.setCapturedCount(playerOne.getCapturedCount() + 1);
-            playerTwo.setPieceCount(playerTwo.getPieceCount() - 1);
-        } else {
-            playerTwo.setCapturedCount(playerTwo.getCapturedCount() + 1);
-            playerOne.setPieceCount(playerOne.getPieceCount() - 1);
-        }
-        updatePieceCounts();
     }
 
     public boolean handlePieceMove(int x, int y) {
@@ -177,15 +167,9 @@ public class ChessGUI {
                     }
                     PromotionActions.mustAdd = false;
                 }
-                // redrawBoard();
+
                 isHandled = true;
-                if (controller.getTurn() == 1) {
-                    playerOne.setMoveCount(playerOne.getMoveCount() + 1);
-                    controller.setTurn(2);
-                } else if (controller.getTurn() == 2) {
-                    playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
-                    controller.setTurn(1);
-                }
+                controller.updateTurnAndMoveCount();
                 break;
             }
         }
@@ -207,14 +191,14 @@ public class ChessGUI {
                                     Translation.translate(StringsEnum.GAME_OVER_TITLE),
                                     JOptionPane.INFORMATION_MESSAGE);
                             resetCapturedSquares();
-                            controller.setupNewGame(controller.isPlayingWithAI(), this);
+                            controller.setupNewGame();
                             resetTime();
                             redrawBoard();
                             controller.setTurn(3);
                         }
                         addP1CapturedPiece(chp);
                         controller.getChessPieces().remove(chp);
-                        capturePiece(chp);
+                        controller.capturePiece(chp);
                         break;
                     }
                 }
@@ -224,18 +208,20 @@ public class ChessGUI {
                 selectedPiece.setY(rtm.y);
                 // redrawBoard();
                 isHandled = true;
-                if (controller.getTurn() == 1) {
-                    playerOne.setMoveCount(playerOne.getMoveCount() + 1);
-                    controller.setTurn(2);
-                } else if (controller.getTurn() == 2) {
-                    playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
-                    controller.setTurn(1);
-                }
+                controller.updateTurnAndMoveCount();
                 break;
             }
         }
 
         return isHandled;
+    }
+
+    private void handleWin() {
+        resetCapturedSquares();
+        controller.setupNewGame();
+        resetTime();
+        redrawBoard();
+        controller.setTurn(3);
     }
 
     private void checkPromotion(ChessPiece chp, int x, int y) {
@@ -298,7 +284,7 @@ public class ChessGUI {
             JOptionPane.showMessageDialog(null, Translation.translate(message),
                     Translation.translate(StringsEnum.GAME_OVER_TITLE), JOptionPane.INFORMATION_MESSAGE);
             resetCapturedSquares();
-            controller.setupNewGame(controller.isPlayingWithAI(), this);
+            controller.setupNewGame();
             resetTime();
             redrawBoard();
             controller.setTurn(3);
@@ -309,7 +295,7 @@ public class ChessGUI {
             addP2CapturedPiece(pieceGoingToCapture);
         }
         controller.getChessPieces().remove(pieceGoingToCapture);
-        capturePiece(pieceGoingToCapture);
+        controller.capturePiece(pieceGoingToCapture);
     }
 
     private boolean playGame() {
@@ -331,13 +317,7 @@ public class ChessGUI {
                 controller.getChessPieces().get(pm.chessPieceIndex).setX(pm.finalPos.x);
                 controller.getChessPieces().get(pm.chessPieceIndex).setY(pm.finalPos.y);
             }
-            if (controller.getTurn() == 1) {
-                playerOne.setMoveCount(playerOne.getMoveCount() + 1);
-                controller.setTurn(2);
-            } else if (controller.getTurn() == 2) {
-                playerTwo.setMoveCount(playerTwo.getMoveCount() + 1);
-                controller.setTurn(1);
-            }
+            controller.updateTurnAndMoveCount();
             isHandled = true;
         }
         return isHandled;
@@ -403,7 +383,7 @@ public class ChessGUI {
         // Depromote
         depromote(chp);
 
-        playerOne.getCapturedPieces().add(chp);
+        controller.getPlayerOne().getCapturedPieces().add(chp);
 
         switch (chp.getType()) {
             case KNIGHT:
@@ -439,7 +419,7 @@ public class ChessGUI {
         // Depromote
         depromote(chp);
 
-        playerTwo.getCapturedPieces().add(chp);
+        controller.getPlayerTwo().getCapturedPieces().add(chp);
 
         switch (chp.getType()) {
             case KNIGHT:
@@ -482,9 +462,6 @@ public class ChessGUI {
         }
         return false;
     }
-
-    // TODO Add other pieces moves
-    // Get Each Piece Possible Moves
 
     public final void initializeGui() {
         ChessPiece.loadImages();
@@ -611,7 +588,9 @@ public class ChessGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 resetCapturedSquares();
-                controller.setupNewGame(isAI, ChessGUI.this);
+                resetGame();
+                controller.setPlayingWithAI(isAI);
+                controller.setupNewGame();
                 resetTime();
                 redrawBoard();
             }
@@ -731,13 +710,15 @@ public class ChessGUI {
         if (controller.getTurn() == 1) {
             timer2.stop();
             timer1.start();
-            turnPlay.setText(Translation.translate(StringsEnum.TURN_LABEL) + playerOne.getMoveCount() + " | " +
-                    Translation.translate(StringsEnum.GAME_MODE) + modoDeJogo);
+            turnPlay.setText(
+                    Translation.translate(StringsEnum.TURN_LABEL) + controller.getPlayerOne().getMoveCount() + " | " +
+                            Translation.translate(StringsEnum.GAME_MODE) + modoDeJogo);
         } else if (controller.getTurn() == 2) {
             timer1.stop();
             timer2.start();
-            turnPlay.setText(Translation.translate(StringsEnum.TURN_LABEL_2) + playerTwo.getMoveCount() + " | " +
-                    Translation.translate(StringsEnum.GAME_MODE) + modoDeJogo);
+            turnPlay.setText(
+                    Translation.translate(StringsEnum.TURN_LABEL_2) + controller.getPlayerTwo().getMoveCount() + " | " +
+                            Translation.translate(StringsEnum.GAME_MODE) + modoDeJogo);
         } else if (controller.getTurn() == 3) {
             turnPlay.setText(Translation.translate(StringsEnum.GAME_OVER_TITLE));
             resetGame();
