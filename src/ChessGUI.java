@@ -68,7 +68,9 @@ public class ChessGUI {
 
     private void initializeTimers() {
         timerLabel1 = new JLabel(Translation.translate(StringsEnum.PLAYER_ONE_TIMER_LABEL) + " 15:00");
+        timerLabel1.setFont(new Font("Arial", Font.BOLD, 16));
         timerLabel2 = new JLabel(Translation.translate(StringsEnum.PLAYER_TWO_TIMER_LABEL) + " 15:00");
+        timerLabel2.setFont(new Font("Arial", Font.BOLD, 16));
 
         timer1 = new Timer(1000, e -> {
             controller.getPlayerOne().getTotalTime().getAndDecrement();
@@ -244,10 +246,15 @@ public class ChessGUI {
 
             if (newx >= 0 && newy >= 0 && newx <= 8 && newy <= 8) {
                 if (controller.isOccupied(newx, newy) == 0) {
+                    chessBoardSquares[newx][newy].setOpaque(true);
                     chessBoardSquares[newx][newy].setBackground(Color.cyan);
+                    chessBoardSquares[newx][newy].repaint();
                     readyToMoveSquares.add(new Point(newx, newy));
+
                 } else if (controller.isOccupied(newx, newy) != chp.getPlayer()) {
+                    chessBoardSquares[newx][newy].setOpaque(true);
                     chessBoardSquares[newx][newy].setBackground(Color.magenta);
+                    chessBoardSquares[newx][newy].repaint();
                     readyToCaptureSquares.add(new Point(newx, newy));
                 }
             }
@@ -260,7 +267,10 @@ public class ChessGUI {
                 // Select the Piece
                 if (controller.getTurn() == chp.getPlayer()) {
                     selectedPiece = chp;
+
+                    chessBoardSquares[x][y].setOpaque(true);
                     chessBoardSquares[x][y].setBackground(Color.green);
+                    chessBoardSquares[x][y].repaint();
                     checkPromotion(chp, x, y);
                     pieceMove(chp);
                 }
@@ -691,9 +701,9 @@ public class ChessGUI {
         for (int ii = 0; ii < 9; ii++) {
             for (int jj = 0; jj < 9; jj++) {
                 chessBoardSquares[ii][jj]
-                        .setIcon(new ImageIcon(new BufferedImage(70, 80, BufferedImage.TYPE_INT_ARGB)));
-                chessBoardSquares[ii][jj].setBackground(mainbg);
-                // chessBoardSquares[ii][jj].setComponentPopupMenu(null);
+                       .setIcon(new ImageIcon(new BufferedImage(70, 80, BufferedImage.TYPE_INT_ARGB)));
+                chessBoardSquares[ii][jj].setBackground(ochre);
+                chessBoardSquares[ii][jj].repaint();
             }
         }
 
@@ -814,8 +824,13 @@ public class ChessGUI {
                             for (int jj = 0; jj < 9; jj++) {
                                 if (controller.isOccupied(ii, jj) == 0) {
                                     // Select the Piece
+                                    chessBoardSquares[ii][jj].setOpaque(true);
+                                    chessBoardSquares[ii][jj].repaint();
                                     chessBoardSquares[ii][jj].setBackground(Color.cyan);
+
+                                    chessBoardSquares[ii][jj].repaint();
                                     readyToMoveSquares.add(new Point(ii, jj));
+
                                 }
                             }
                         }
@@ -837,7 +852,10 @@ public class ChessGUI {
                                 for (int jj = 0; jj < 9; jj++) {
                                     if (controller.isOccupied(ii, jj) == 0) {
                                         // Select the Piece
+
+                                        chessBoardSquares[ii][jj].setOpaque(true);
                                         chessBoardSquares[ii][jj].setBackground(Color.cyan);
+                                        chessBoardSquares[ii][jj].repaint();
                                         readyToMoveSquares.add(new Point(ii, jj));
                                     }
                                 }
