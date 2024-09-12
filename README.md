@@ -37,4 +37,23 @@ To run the game locally:
 ## 🌟 Contributing
 Feel free to fork the project and submit pull requests. Contributions are welcome!
 
----w
+## Mudanças 2024/1 
+
+### 1. ChessController
+Criação da classe controller que tem como objetivo gerenciar variáveis e a parte lógica do jogo
+
+### 2. Aba de instruções do jogo
+Criação do botão da navbar "Instruções" com intruções do jogo
+
+### 3. Cronômetros dos jogadores
+Adição de cronômetros para os jogadores
+
+### 4. Correção das cores dos possíveis movimentos em macOS
+No macOS, as cores dos possíveis movimentos de cada peça não estvam aparecendo, mas no Windows sim. 
+Esse e outros bugs no macOS foram corrigidos.
+
+### 5. Tradução do jogo
+Criação da classe Translations que permite alterar o idioma do jogo em Inglês e Português
+
+### 6. Adicção de README.md no projeto
+Adição um Readme com informações sobre o projeto: prints, getting started, como rodar.
